@@ -8,12 +8,11 @@ class ClosetHomePage extends StatefulWidget {
   @override
   _ClosetHomePageState createState() => _ClosetHomePageState();
 }
-
 class _ClosetHomePageState extends State<ClosetHomePage> {
   final List<String> categories = Categories.categories;
   final Map<String, List<String>> subCategories = Categories.subCategories;
 
-  String? _selectedCategory;
+  String? _selectedCategory = '상의'; // Initialize selected category here
   String? _selectedSubCategory;
 
   List<Map<String, String>> items = [
@@ -29,6 +28,13 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
   }
 
   DateTime? currentBackPressTime;
+
+  @override
+  void initState() {
+    super.initState();
+    // Select the default category when the screen loads
+    _saveSelectedCategory(_selectedCategory!);
+  }
 
   @override
   Widget build(BuildContext context) {

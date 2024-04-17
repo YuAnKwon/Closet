@@ -21,7 +21,6 @@ class CategorySubCategoryWidgets extends StatefulWidget {
   _CategorySubCategoryWidgetsState createState() =>
       _CategorySubCategoryWidgetsState();
 }
-
 class _CategorySubCategoryWidgetsState
     extends State<CategorySubCategoryWidgets> {
   @override
@@ -29,74 +28,87 @@ class _CategorySubCategoryWidgetsState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: widget.categories
-                .map((category) => GestureDetector(
-              onTap: () {
-                widget.onCategorySelected(category);
-              },
-              child: Container(
-                padding: EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: widget.selectedCategory == category
-                      ? Colors.blue
-                      : Colors.grey,
+        SizedBox(height: 20), // Add some spacing at the top
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: widget.categories
+              .map((category) => GestureDetector(
+            onTap: () {
+              widget.onCategorySelected(category);
+            },
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: widget.selectedCategory == category
+                        ? Colors.blue.withOpacity(0.8)
+                        : Colors.grey.withOpacity(0.5),
+                  ),
+                  child: Image.asset(
+                    'assets/$category.png', // Update with your image path
+                    width: 40,
+                    height: 40,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                child: Image.asset(
-                  'assets/$category.png', // 각 카테고리에 맞는 이미지 경로로 변경
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
+                SizedBox(height: 4), // Add spacing between the image and text
+                Text(
+                  category,
+                  style: TextStyle(
+                    color: widget.selectedCategory == category
+                        ? Colors.blue
+                        : Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ))
-                .toList(),
-          ),
+              ],
+            ),
+          ))
+              .toList(),
         ),
         SizedBox(height: 16),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              if (widget.selectedCategory != null)
-                ...widget.subCategories[widget.selectedCategory!]!
-                    .map((subCategory) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      widget.onSubCategorySelected(subCategory);
-                    },
-                    child: Chip(
-                      label: Text(
-                        subCategory,
-                        style: TextStyle(
-                          color: widget.selectedSubCategory == subCategory
-                              ? Colors.blue
-                              : Colors.grey,
+        Center( // Center the subcategories horizontally
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                if (widget.selectedCategory != null)
+                  ...widget.subCategories[widget.selectedCategory!]!
+                      .map((subCategory) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        widget.onSubCategorySelected(subCategory);
+                      },
+                      child: Chip(
+                        label: Text(
+                          subCategory,
+                          style: TextStyle(
+                            color: widget.selectedSubCategory == subCategory
+                                ? Colors.white
+                                : Colors.black,
+                          ),
                         ),
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      shape: StadiumBorder(
-                        side: BorderSide(
-                          color: widget.selectedSubCategory == subCategory
-                              ? Colors.blue
-                              : Colors.grey,
-                          width: 1,
+                        backgroundColor: widget.selectedSubCategory == subCategory
+                            ? Colors.blue
+                            : Colors.grey.withOpacity(0.3),
+                        elevation: 0,
+                        shape: StadiumBorder(
+                          side: BorderSide.none,
                         ),
                       ),
                     ),
-                  ),
-                ))
-                    .toList(),
-            ],
+                  ))
+                      .toList(),
+              ],
+            ),
           ),
         ),
       ],
     );
   }
 }
+
