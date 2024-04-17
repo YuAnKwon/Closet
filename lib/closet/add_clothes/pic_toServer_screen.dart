@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 
-import '../../api_resource/api_resource.dart';
+import '../../api_resource/ApiResource.dart';
 import 'cloth_upload_screen.dart';
 
 class CameraCapture extends StatefulWidget {
@@ -125,7 +125,7 @@ class _CameraCaptureState extends State<CameraCapture> {
       print('성공적으로 업로드했습니다');
       print('응답 데이터: ${response.data}');
 
-      // 이미지 업로드 후 다른 페이지로 이동
+     // 이미지 업로드 후 다른 페이지로 이동
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ClothUpload(responseData: response.data)),

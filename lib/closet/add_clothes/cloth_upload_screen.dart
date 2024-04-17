@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../api_resource/api_resource.dart';
+import '../../api_resource/ApiResource.dart';
+import '../Categories.dart';
+import 'category_buttons.dart';
 import '../closet_mainscreen.dart';
 
 class ClothUpload extends StatefulWidget {
@@ -21,14 +23,8 @@ class _ClothRegisterState extends State<ClothUpload> {
   Uint8List? _imageBytes;
   String? _selectedCategory;
   TextEditingController _infoController = TextEditingController();
-
-  List<String> categories = ['상의', '하의', '신발', '가방'];
-  Map<String, List<String>> subCategories = {
-    '상의': ['니트', '후드', '티셔츠', '맨투맨', '셔츠'],
-    '하의': ['청바지', '슬랙스', '치마', '반바지'],
-    '신발': ['운동화', '구두', '샌들', '슬리퍼'],
-    '가방': ['백팩', '숄더백', '크로스백', '토트백'],
-  };
+  List<String> categories = Categories.categories;
+  Map<String, List<String>> subCategories = Categories.subCategories;
 
   @override
   void initState() {
@@ -42,6 +38,7 @@ class _ClothRegisterState extends State<ClothUpload> {
     super.dispose();
   }
 
+  // ----------배경제거된 이미지 받기------------------
   void _getImageFromServer() async {
     final Map<String, dynamic> data =
         widget.responseData; // responseData를 사용하여 데이터 가져오기
@@ -52,66 +49,13 @@ class _ClothRegisterState extends State<ClothUpload> {
     });
   }
 
-  Widget _buildCategoryButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: categories
-          .map((category) => ElevatedButton(
-                onPressed: () {
-                  _saveSelectedCategory(category);
-                },
-                child: Text(category),
-              ))
-          .toList(),
-    );
-  }
+  String? _selectedSubCategory;
 
   void _saveSelectedCategory(String category) {
     setState(() {
       _selectedCategory = category;
     });
   }
-
-  Widget _buildSubCategories() {
-    if (_selectedCategory == null) {
-      return SizedBox.shrink();
-    }
-    final subCategoryList = subCategories[_selectedCategory!] ?? [];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '하위 카테고리 선택',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 10),
-        Wrap(
-          spacing: 10,
-          children: subCategoryList
-              .map((subCategory) => ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedSubCategory = subCategory;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _selectedSubCategory == subCategory
-                          ? Color(0xDAD9FF) // 색상 코드
-                          : null,
-                    ),
-                    child: Text(subCategory),
-                  ))
-              .toList(),
-        ),
-        SizedBox(height: 20),
-      ],
-    );
-  }
-
-  String? _selectedSubCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -136,9 +80,18 @@ class _ClothRegisterState extends State<ClothUpload> {
                 ),
               ),
               SizedBox(height: 10),
-              _buildCategoryButtons(),
-              SizedBox(height: 20),
-              _buildSubCategories(),
+              CategorySubCategoryWidgets(
+                categories: categories,
+                subCategories: subCategories,
+                onCategorySelected: _saveSelectedCategory,
+                onSubCategorySelected: (String subCategory) {
+                  setState(() {
+                    _selectedSubCategory = subCategory;
+                  });
+                },
+                selectedCategory: _selectedCategory,
+                selectedSubCategory: _selectedSubCategory,
+              ),
               SizedBox(height: 20),
               Text(
                 '정보란',
@@ -177,43 +130,44 @@ class _ClothRegisterState extends State<ClothUpload> {
     return Center(
       child: _imageBytes != null
           ? Container(
-              child: Image.memory(
-                _imageBytes!,
-                fit: BoxFit.cover,
-              ),
-            )
+        child: Image.memory(
+          _imageBytes!,
+          fit: BoxFit.cover,
+        ),
+      )
           : _image != null
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 20),
-                    Text(
-                      '사진 불러오는 중...',
-                      style: TextStyle(
-                        fontSize: 17,
-                      ),
-                    ),
-                  ],
-                )
-              : Container(
-                  width: 300,
-                  height: 300,
-                  color: Colors.grey,
-                  child: Center(
-                    child: _imageBytes == null
-                        ? Text(
-                            '사진 불러오기에 실패했습니다.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 17,
-                            ),
-                          )
-                        : CircularProgressIndicator(),
-                  ),
-                ),
+          ? Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: 20),
+          Text(
+            '사진 불러오는 중...',
+            style: TextStyle(
+              fontSize: 17,
+            ),
+          ),
+        ],
+      )
+          : Container(
+        width: 300,
+        height: 300,
+        color: Colors.grey,
+        child: Center(
+          child: _imageBytes == null
+              ? Text(
+            '사진 불러오기에 실패했습니다.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 17,
+            ),
+          )
+              : CircularProgressIndicator(),
+        ),
+      ),
     );
   }
+
 
   void _saveClothInformation(String? subCategory) {
     // TextFormField에서 텍스트 가져오기
@@ -227,7 +181,7 @@ class _ClothRegisterState extends State<ClothUpload> {
         'category': subCategory,
         'memo': info,
       };
-
+      print(widget.responseData['filename']);
       sendDataToServer(clothData);
     } else {
       // 카테고리가 선택되지 않은 경우 toast 표시
@@ -239,7 +193,6 @@ class _ClothRegisterState extends State<ClothUpload> {
       );
     }
   }
-
 
   Future<void> sendDataToServer(Map<String, dynamic> data) async {
     try {
@@ -270,12 +223,8 @@ class _ClothRegisterState extends State<ClothUpload> {
         // 서버가 성공적으로 응답한 경우
         print('데이터 전송 성공');
         // 다음 화면으로 이동
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ClosetHomePage()), // 홈 페이지로 이동
-        );
-      } else {
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    } else {
         // 오류가 발생한 경우
         print('HTTP 오류: ${response.reasonPhrase}');
       }
