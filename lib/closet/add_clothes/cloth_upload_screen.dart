@@ -7,7 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../api_resource/ApiResource.dart';
 import '../Categories.dart';
 import 'category_buttons.dart';
-import '../closet_mainscreen.dart';
 
 class ClothUpload extends StatefulWidget {
   final Map<String, dynamic> responseData;

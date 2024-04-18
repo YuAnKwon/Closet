@@ -1,13 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+
+import '../api_resource/ApiResource.dart';
 import 'Categories.dart';
-import 'main_catgory_buttons.dart';
 import 'add_clothes/pic_toServer_screen.dart';
+import 'closet_info_screen.dart';
+import 'main_catgory_buttons.dart';
 
 class ClosetHomePage extends StatefulWidget {
   @override
   _ClosetHomePageState createState() => _ClosetHomePageState();
 }
+
 class _ClosetHomePageState extends State<ClosetHomePage> {
   final List<String> categories = Categories.categories;
   final Map<String, List<String>> subCategories = Categories.subCategories;
@@ -15,12 +22,10 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
   String? _selectedCategory = '상의'; // Initialize selected category here
   String? _selectedSubCategory;
 
-  List<Map<String, String>> items = [
-    {'image': 'path/to/your/image1.jpg', 'label': 'Item 1'},
-    // Add more items here
-  ];
+  List<Map<String, dynamic>> items = [];
 
   int _pageNumber = 1;
+
   void _onItemTapped(int index) {
     setState(() {
       _pageNumber = index;
@@ -57,13 +62,14 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
                 setState(() {
                   _selectedSubCategory = subCategory;
                 });
+                _getImagesFromServer();
               },
               selectedCategory: _selectedCategory,
               selectedSubCategory: _selectedSubCategory,
             ),
             SizedBox(height: 20),
             Expanded(
-              child: GridView.builder(
+              child:GridView.builder(
                 padding: EdgeInsets.all(8.0),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -73,11 +79,35 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
                 ),
                 itemCount: items.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return GridTile(
-                    child: Text('사진'), //Image.asset(items[index]['image'])
-                  );
+                  if (items.isEmpty) {
+                    return Center(child: Text('이미지가 없습니다.'));
+                  } else {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ClothDetailPage(
+                              image: items[index]['image']!,
+                              clothNum: items[index]['num'],
+                            ),
+                          ),
+                        );
+                      },
+                      child: GridTile(
+                        child: Image.memory(
+                          base64.decode(items[index]['image']!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
+
+
+
+
             ),
           ],
         ),
@@ -129,9 +159,39 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
         setState(() {
           _selectedSubCategory = subCategories[category]![0];
         });
+        _getImagesFromServer();
       }
     });
   }
+
+  void _getImagesFromServer() async {
+    setState(() {
+      items.clear();
+    });
+    try {
+      final response = await http.get(
+          Uri.parse('${ApiResource.serverUrl}/closet/$_selectedSubCategory'),
+          headers: {'ngrok-skip-browser-warning': 'true'}
+      );
+      final jsonData = jsonDecode(response.body);
+      List<dynamic> imagesData = jsonData;
+      List<Map<String, dynamic>> images = []; // images 리스트의 타입 변경
+      for (var imageData in imagesData) {
+        String imageString = imageData['image'];
+        int clothNum = imageData['num'];
+        images.add({'image': imageString, 'num': clothNum}); // 'num'을 items에 추가
+      }
+
+      setState(() {
+        items = images;
+      });
+    } catch (error) {
+      print('Error fetching images from server: $error');
+    }
+  }
+
+
+
 
   Future<bool> onWillPop() async {
     DateTime now = DateTime.now();

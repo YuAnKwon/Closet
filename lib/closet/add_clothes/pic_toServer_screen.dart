@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
@@ -20,7 +21,6 @@ class _CameraCaptureState extends State<CameraCapture> {
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(
       source: imageSource,
-      imageQuality: 30, // 이미지 크기 압축을 위해 퀄리티를 30으로 낮춤.
     );
     if (pickedFile != null) {
       setState(() {
@@ -67,15 +67,15 @@ class _CameraCaptureState extends State<CameraCapture> {
   Widget _buildPhotoArea() {
     return _image != null
         ? Container(
-            width: 300,
-            height: 300,
-            child: Image.file(File(_image!.path)), // 가져온 이미지를 화면에 띄워주는 코드
-          )
+      width: 300,
+      height: 300,
+      child: Image.file(File(_image!.path)), // 가져온 이미지를 화면에 띄워주는 코드
+    )
         : Container(
-            width: 300,
-            height: 300,
-            color: Colors.grey,
-          );
+      width: 300,
+      height: 300,
+      color: Colors.grey,
+    );
   }
 
   Widget _buildButton() {
@@ -102,53 +102,56 @@ class _CameraCaptureState extends State<CameraCapture> {
   //----------------------사진 POST----------------------------
   void post_clothpic(String imagePath) async {
     setState(() {
-      _loading = true; // 로딩 상태 시작
+      _loading = true; // Start loading state
     });
-    print("프로필 사진을 서버에 업로드 합니다.");
-    var dio = new Dio();
+    var dio = Dio();
     try {
       dio.options.contentType = 'multipart/form-data';
       dio.options.maxRedirects.isFinite;
 
-      // FormData 생성
+      // Create FormData
       var formData = FormData.fromMap({
         'image': await MultipartFile.fromFile(imagePath),
       });
 
-      // 서버로 POST 요청 전송
+      // Send POST request to the server
       var response = await dio.post(
         ApiResource.serverUrl + '/closet/upload',
         data: formData,
       );
 
-      // 서버로부터의 응답 확인
-      print('성공적으로 업로드했습니다');
+      // Check response from the server
       print('응답 데이터: ${response.data}');
 
-     // 이미지 업로드 후 다른 페이지로 이동
+      // Navigate to another page after uploading the image
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ClothUpload(responseData: response.data)),
       );
     } catch (e) {
-      // 예외 처리 및 실패 시 알림 표시
-      print('오류 발생: $e');
-      showAlertDialog(context);
+      // Handle exceptions and show alert if failed
+      print('업로드 실패: $e');
+      if (e is DioError && e.response != null && e.response!.statusCode == 400 && e.response!.data['error'] == 'Image already exists in the database') {
+        showAlertDialog(context, '동일한 이미지가 이미 등록되었습니다.');
+      } else {
+        showAlertDialog(context, '이미지 업로드에 실패했습니다.');
+      }
     } finally {
       setState(() {
-        _loading = false; // 로딩 상태 종료
+        _loading = false; // End loading state
       });
     }
   }
 
+
   // 알림 창 표시
-  void showAlertDialog(BuildContext context) {
+  void showAlertDialog(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("업로드 실패"),
-          content: Text("사진을 업로드하는 도중 오류가 발생했습니다."),
+          content: Text(message),
           actions: [
             TextButton(
               onPressed: () {
