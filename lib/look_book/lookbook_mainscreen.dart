@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../res/back_handler.dart';
 import 'add_lookbook/add_lookbook_screen.dart';
-import 'add_lookbook/test.dart';
 
 class LookbookPage extends StatefulWidget {
   @override
@@ -56,7 +55,7 @@ class _LookbookPageState extends State<LookbookPage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SelectImage()),
+              MaterialPageRoute(builder: (context) => AddLookBook()),
             );
           },
           tooltip: '룩 추가',

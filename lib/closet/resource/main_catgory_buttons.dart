@@ -70,38 +70,41 @@ class _CategorySubCategoryWidgetsState
               .toList(),
         ),
         SizedBox(height: 16),
-        Center( // Center the subcategories horizontally
+        Center(
+          // Center the subcategories horizontally
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
                 if (widget.selectedCategory != null)
                   ...widget.subCategories[widget.selectedCategory!]!
-                      .map((subCategory) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        widget.onSubCategorySelected(subCategory);
-                      },
-                      child: Chip(
-                        label: Text(
-                          subCategory,
-                          style: TextStyle(
-                            color: widget.selectedSubCategory == subCategory
-                                ? Colors.white
-                                : Colors.black,
+                      .map(
+                        (subCategory) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          widget.onSubCategorySelected(subCategory);
+                        },
+                        child: Chip(
+                          label: Text(
+                            subCategory,
+                            style: TextStyle(
+                              color: widget.selectedSubCategory == subCategory
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                           ),
-                        ),
-                        backgroundColor: widget.selectedSubCategory == subCategory
-                            ? Colors.blue
-                            : Colors.grey.withOpacity(0.3),
-                        elevation: 0,
-                        shape: StadiumBorder(
-                          side: BorderSide.none,
+                          backgroundColor: widget.selectedSubCategory == subCategory
+                              ? Colors.blue
+                              : Colors.grey.withOpacity(0.3),
+                          elevation: 0,
+                          shape: StadiumBorder(
+                            side: BorderSide.none,
+                          ),
                         ),
                       ),
                     ),
-                  ))
+                  )
                       .toList(),
               ],
             ),
@@ -111,4 +114,3 @@ class _CategorySubCategoryWidgetsState
     );
   }
 }
-

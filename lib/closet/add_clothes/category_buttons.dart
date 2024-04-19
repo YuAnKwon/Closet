@@ -40,7 +40,8 @@ class CategorySubCategoryWidgets extends StatelessWidget {
           onCategorySelected(category);
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: selectedCategory == category ? Color(0xDAD9FF) : null,
+          backgroundColor:
+          selectedCategory == category ? Color(0xDAD9FF) : null,
         ),
         child: Text(category),
       ))
@@ -53,19 +54,27 @@ class CategorySubCategoryWidgets extends StatelessWidget {
       return SizedBox.shrink();
     }
     final subCategoryList = subCategories[selectedCategory!] ?? [];
-    return Wrap(
-      spacing: 10,
-      children: subCategoryList
-          .map((subCategory) => ElevatedButton(
-        onPressed: () {
-          onSubCategorySelected(subCategory);
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: selectedSubCategory == subCategory ? Color(0xDAD9FF) : null,
-        ),
-        child: Text(subCategory),
-      ))
-          .toList(),
+    return Container(
+      height: 50, // Set a fixed height for the ListView
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: subCategoryList
+            .map((subCategory) => Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: ElevatedButton(
+            onPressed: () {
+              onSubCategorySelected(subCategory);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: selectedSubCategory == subCategory
+                  ? Color(0xDAD9FF)
+                  : null,
+            ),
+            child: Text(subCategory),
+          ),
+        ))
+            .toList(),
+      ),
     );
   }
 }
