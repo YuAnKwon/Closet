@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 import '../api_resource/ApiResource.dart';
-import 'Categories.dart';
+import '../res/back_handler.dart';
+import 'resource/Categories.dart';
 import 'add_clothes/pic_toServer_screen.dart';
 import 'edit_delete_cloth/info_edit_screen.dart';
-import 'main_catgory_buttons.dart';
+import 'resource/main_catgory_buttons.dart';
 
 class ClosetHomePage extends StatefulWidget {
   @override
@@ -30,6 +30,10 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
     setState(() {
       _pageNumber = index;
     });
+
+    if (_pageNumber == 0) {
+      Navigator.pushReplacementNamed(context, '/lookbook'); // 룩북 페이지로 이동
+    }
   }
 
   DateTime? currentBackPressTime;
@@ -44,7 +48,7 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: onWillPop,
+      onWillPop: BackButtonHandler.onWillPop,
       child: Scaffold(
         appBar: AppBar(
           title: Text('내 옷장'),
@@ -97,8 +101,9 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
                                     builder: (context) => ClothDetailPage(
                                       image: items[index]['image']!,
                                       clothNum: items[index]['num'],
-                                      category: _selectedCategory, // 선택한 상위 카테고리
-                                      subcategory : _selectedSubCategory,
+                                      category:
+                                          _selectedCategory, // 선택한 상위 카테고리
+                                      subcategory: _selectedSubCategory,
                                     ),
                                   ),
                                 );
@@ -141,7 +146,7 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
             ),
           ],
           currentIndex: _pageNumber,
-          selectedItemColor: Colors.amber[800],
+          //selectedItemColor: Colors.amber[800],
           onTap: _onItemTapped,
         ),
       ),
@@ -197,30 +202,5 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
         _isLoading = false;
       });
     }
-  }
-
-
-
-  Future<bool> onWillPop() async {
-    DateTime now = DateTime.now();
-
-    if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
-      currentBackPressTime = now;
-      final msg = "앱을 종료하려면 한 번 더 누르세요";
-
-      Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.grey[700],
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      return Future.value(false);
-    }
-
-    return Future.value(true);
   }
 }

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:closet/api_resource/ApiResource.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../Categories.dart';
+import '../resource/Categories.dart';
 import '../add_clothes/category_buttons.dart';
 import 'delete_cloth_screen.dart';
 
@@ -127,7 +127,7 @@ class _ClothDetailPageState extends State<ClothDetailPage> {
               ),
               SizedBox(height: 20),
               Text(
-                '정보란',
+                'MEMO',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
