@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import '../api_resource/ApiResource.dart';
 import 'Categories.dart';
 import 'add_clothes/pic_toServer_screen.dart';
-import 'closet_info_screen.dart';
+import 'edit_delete_cloth/info_edit_screen.dart';
 import 'main_catgory_buttons.dart';
 
 class ClosetHomePage extends StatefulWidget {
@@ -18,8 +18,8 @@ class ClosetHomePage extends StatefulWidget {
 class _ClosetHomePageState extends State<ClosetHomePage> {
   final List<String> categories = Categories.categories;
   final Map<String, List<String>> subCategories = Categories.subCategories;
-
-  String? _selectedCategory = '상의'; // Initialize selected category here
+  bool _isLoading = false; // 로딩 상태 변수 추가
+  String? _selectedCategory = '상의';
   String? _selectedSubCategory;
 
   List<Map<String, dynamic>> items = [];
@@ -69,45 +69,49 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
             ),
             SizedBox(height: 20),
             Expanded(
-              child:GridView.builder(
-                padding: EdgeInsets.all(8.0),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8.0,
-                  mainAxisSpacing: 8.0,
-                  childAspectRatio: 1.0,
-                ),
-                itemCount: items.length,
-                itemBuilder: (BuildContext context, int index) {
-                  if (items.isEmpty) {
-                    return Center(child: Text('이미지가 없습니다.'));
-                  } else {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ClothDetailPage(
-                              image: items[index]['image']!,
-                              clothNum: items[index]['num'],
-                            ),
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : items.isEmpty
+                      ? Center(
+                          child: Text(
+                            '해당 카테고리에 등록된 옷이 없습니다.',
+                            style: TextStyle(fontSize: 16.0),
                           ),
-                        );
-                      },
-                      child: GridTile(
-                        child: Image.memory(
-                          base64.decode(items[index]['image']!),
-                          fit: BoxFit.cover,
+                        )
+                      : GridView.builder(
+                          padding: EdgeInsets.all(8.0),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 8.0,
+                            mainAxisSpacing: 8.0,
+                            childAspectRatio: 1.0,
+                          ),
+                          itemCount: items.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ClothDetailPage(
+                                      image: items[index]['image']!,
+                                      clothNum: items[index]['num'],
+                                      category: _selectedCategory, // 선택한 상위 카테고리
+                                      subcategory : _selectedSubCategory,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: GridTile(
+                                child: Image.memory(
+                                  base64.decode(items[index]['image']!),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                    );
-                  }
-                },
-              ),
-
-
-
-
             ),
           ],
         ),
@@ -167,29 +171,33 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
   void _getImagesFromServer() async {
     setState(() {
       items.clear();
+      _isLoading = true;
     });
     try {
       final response = await http.get(
-          Uri.parse('${ApiResource.serverUrl}/closet/$_selectedSubCategory'),
-          headers: {'ngrok-skip-browser-warning': 'true'}
+        Uri.parse('${ApiResource.serverUrl}/closet/$_selectedSubCategory'),
+        headers: {'ngrok-skip-browser-warning': 'true'},
       );
       final jsonData = jsonDecode(response.body);
       List<dynamic> imagesData = jsonData;
-      List<Map<String, dynamic>> images = []; // images 리스트의 타입 변경
+      List<Map<String, dynamic>> images = [];
       for (var imageData in imagesData) {
         String imageString = imageData['image'];
         int clothNum = imageData['num'];
-        images.add({'image': imageString, 'num': clothNum}); // 'num'을 items에 추가
+        images.add({'image': imageString, 'num': clothNum});
       }
 
       setState(() {
         items = images;
+        _isLoading = false;
       });
     } catch (error) {
       print('Error fetching images from server: $error');
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
-
 
 
 

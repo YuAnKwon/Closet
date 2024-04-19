@@ -24,7 +24,9 @@ class CategorySubCategoryWidgets extends StatelessWidget {
       children: [
         _buildCategoryButtons(),
         SizedBox(height: 20),
-        _buildSubCategories(),
+        Center(
+          child: _buildSubCategories(),
+        ),
       ],
     );
   }
@@ -38,9 +40,7 @@ class CategorySubCategoryWidgets extends StatelessWidget {
           onCategorySelected(category);
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: selectedCategory == category
-              ? Color(0xDAD9FF)
-              : null,
+          backgroundColor: selectedCategory == category ? Color(0xDAD9FF) : null,
         ),
         child: Text(category),
       ))
@@ -61,9 +61,7 @@ class CategorySubCategoryWidgets extends StatelessWidget {
           onSubCategorySelected(subCategory);
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: selectedSubCategory == subCategory
-              ? Color(0xDAD9FF)
-              : null,
+          backgroundColor: selectedSubCategory == subCategory ? Color(0xDAD9FF) : null,
         ),
         child: Text(subCategory),
       ))
