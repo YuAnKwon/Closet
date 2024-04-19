@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../res/back_handler.dart';
+import '../resource/back_handler.dart';
 import 'add_lookbook/add_lookbook_screen.dart';
 
 class LookbookPage extends StatefulWidget {

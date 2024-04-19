@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../api_resource/ApiResource.dart';
-import '../resource/Categories.dart';
+import '../../resource/Categories.dart';
 import 'category_buttons.dart';
 
 class ClothUpload extends StatefulWidget {

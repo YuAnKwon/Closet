@@ -10,6 +10,7 @@ class MyClosetApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: '내 옷장',
       routes: {
         '/home': (BuildContext context) => ClosetHomePage(), // 기본 경로 (홈 화면)

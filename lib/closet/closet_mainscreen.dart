@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
-import '../api_resource/ApiResource.dart';
-import '../res/back_handler.dart';
-import 'resource/Categories.dart';
+import '../resource/back_handler.dart';
+import '../resource/Categories.dart';
+import '../resource/getImages_FromServer.dart';
 import 'add_clothes/pic_toServer_screen.dart';
 import 'edit_delete_cloth/info_edit_screen.dart';
 import 'resource/main_catgory_buttons.dart';
@@ -178,19 +177,9 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
       items.clear();
       _isLoading = true;
     });
+
     try {
-      final response = await http.get(
-        Uri.parse('${ApiResource.serverUrl}/closet/$_selectedSubCategory'),
-        headers: {'ngrok-skip-browser-warning': 'true'},
-      );
-      final jsonData = jsonDecode(response.body);
-      List<dynamic> imagesData = jsonData;
-      List<Map<String, dynamic>> images = [];
-      for (var imageData in imagesData) {
-        String imageString = imageData['image'];
-        int clothNum = imageData['num'];
-        images.add({'image': imageString, 'num': clothNum});
-      }
+      List<Map<String, dynamic>> images = await getImagesFromServer(_selectedSubCategory!);
 
       setState(() {
         items = images;
