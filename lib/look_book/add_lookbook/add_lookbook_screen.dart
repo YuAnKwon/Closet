@@ -19,11 +19,12 @@ class _AddLookBookState extends State<AddLookBook> {
   bool _isLoading = false; // 로딩 상태 변수 추가
   String? _selectedCategory = '상의';
   String? _selectedSubCategory;
-  Map<String, String> _selectedImages = {}; // 선택한 이미지들을 보관하는 맵
+  Map<String, dynamic> _selectedImages = {}; // 선택한 이미지들을 보관하는 맵
   List<Map<String, dynamic>> items = [];
 
   DateTime? currentBackPressTime;
 
+  //---옷장 조회
   @override
   void initState() {
     super.initState();
@@ -31,11 +32,33 @@ class _AddLookBookState extends State<AddLookBook> {
     _saveSelectedCategory(_selectedCategory!);
   }
 
+  void _getImagesFromServer() async {
+    setState(() {
+      items.clear();
+      _isLoading = true;
+    });
+
+    try {
+      List<Map<String, dynamic>> images =
+          await getImagesFromServer(_selectedSubCategory!);
+
+      setState(() {
+        items = images;
+        _isLoading = false;
+      });
+    } catch (error) {
+      print('Error fetching images from server: $error');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('옷 선택'),
+        title: const Text('옷 선택'),
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
@@ -78,7 +101,7 @@ class _AddLookBookState extends State<AddLookBook> {
                         itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                             onTap: () {
-                              _selectImage(items[index]['image']);
+                              _selectImage(items[index]);
                             },
                             child: GridTile(
                               child: Image.memory(
@@ -97,14 +120,7 @@ class _AddLookBookState extends State<AddLookBook> {
     );
   }
 
-  // 선택한 이미지를 보관하는 맵에 추가하는 메소드
-  void _selectImage(String image) {
-    setState(() {
-      _selectedImages[_selectedCategory!] = image;
-    });
-  }
-
-  // 선택한 카테고리를 저장하는 메소드
+  // 선택한 카테고리 저장
   void _saveSelectedCategory(String category) {
     setState(() {
       _selectedCategory = category;
@@ -124,29 +140,18 @@ class _AddLookBookState extends State<AddLookBook> {
     });
   }
 
-  void _getImagesFromServer() async {
+  // 선택한 이미지를 보관하는 맵에 추가
+  void _selectImage(Map<String, dynamic> imageData) {
     setState(() {
-      items.clear();
-      _isLoading = true;
+      _selectedImages[_selectedCategory!] = {
+        'category': _selectedCategory!,
+        'image': imageData['image'],
+        'num': imageData['num']
+      };
     });
-
-    try {
-      List<Map<String, dynamic>> images =
-          await getImagesFromServer(_selectedSubCategory!);
-
-      setState(() {
-        items = images;
-        _isLoading = false;
-      });
-    } catch (error) {
-      print('Error fetching images from server: $error');
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
-  // 선택한 이미지들을 보여주는 위젯
+  // 선택한 이미지 ui
   Widget _buildSelectedImages() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,12 +161,13 @@ class _AddLookBookState extends State<AddLookBook> {
           scrollDirection: Axis.horizontal, // 가로 스크롤 지원
           child: Row(
             children: _selectedImages.entries.map((entry) {
+              String image = entry.value['image'];
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
                     Text(
-                      '${entry.key}',
+                      '${entry.value['category']}',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -174,7 +180,7 @@ class _AddLookBookState extends State<AddLookBook> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Image.memory(
-                        base64.decode(entry.value),
+                        base64.decode(image),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -187,8 +193,8 @@ class _AddLookBookState extends State<AddLookBook> {
         SizedBox(height: 20),
         Center(
           child: ElevatedButton(
-            onPressed: _saveLookbookToServer, // 저장 버튼을 누를 때 호출되는 메서드
-            child: Text('룩북에 저장'),
+            onPressed: writeLookName,
+            child: Text('선택 완료'),
           ),
         ),
         SizedBox(height: 20),
@@ -196,7 +202,42 @@ class _AddLookBookState extends State<AddLookBook> {
     );
   }
 
-  void _saveLookbookToServer() async {
+// 룩 이름 저장
+  void writeLookName() {
+    TextEditingController nameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: const Text('이름'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: nameController,
+                decoration: const InputDecoration(hintText: '룩 이름을 적어주세요'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // 사용자가 입력한 룩 이름 가져오기
+                String lookName = nameController.text;
+                _saveLookbookToServer(lookName);
+                Navigator.pop(context);
+              },
+              child: const Text('저장'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+//-------서버로 전송하기---------
+  void _saveLookbookToServer(String lookName) async {
     // 선택된 이미지 수
     int selectedCount = _selectedImages.length;
 
@@ -204,21 +245,25 @@ class _AddLookBookState extends State<AddLookBook> {
     if (selectedCount == 0 || selectedCount == 1) {
       // 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('적어도 2개의 이미지를 선택해야 합니다.'),
+        const SnackBar(
+          content: Text('옷을 2개 이상 선택해주세요.'),
           backgroundColor: Colors.red,
         ),
       );
       return; // 중단
     }
-///  _selectedImages 안에 num 부터 넣어야함. 그거 안돼서 이러는듯
+
     try {
       List<Map<String, dynamic>> imageDataList = [];
+
       // 상위 카테고리와 해당 이미지의 num만 보내기
       _selectedImages.forEach((category, image) {
-        imageDataList.add({'category': category, 'num': clothNum});
+        int clothNum = _selectedImages[category]!['num'];
+        imageDataList.add({category: clothNum});
       });
 
+      // 룩의 이름 추가
+      imageDataList.add({'lookname': lookName});
       String jsonData = jsonEncode({'images': imageDataList});
 
       var response = await http.post(
@@ -226,7 +271,6 @@ class _AddLookBookState extends State<AddLookBook> {
         body: jsonData,
         headers: {'Content-Type': 'application/json'},
       );
-      print('전송할 데이터 입니다 !!!!!!!!!!!!!!!!!!!! ${jsonData}');
 
       // 응답 처리
       if (response.statusCode == 200) {
@@ -240,18 +284,16 @@ class _AddLookBookState extends State<AddLookBook> {
             fontSize: 16.0);
       } else {
         // 저장 실패에 대한 처리
-        throw Exception('이미지 저장에 실패하였습니다.');
+        throw Exception('룩 저장에 실패하였습니다.');
       }
     } catch (error) {
       // 에러 처리
-      print('Error saving images to server: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('이미지 저장에 실패하였습니다.'),
+        const SnackBar(
+          content: Text('룩 저장에 실패하였습니다.'),
           backgroundColor: Colors.red,
         ),
       );
     }
   }
-
 }

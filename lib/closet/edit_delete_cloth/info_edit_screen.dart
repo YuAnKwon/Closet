@@ -37,7 +37,7 @@ class _ClothDetailPageState extends State<ClothDetailPage> {
     super.initState();
     _memoController = TextEditingController(text: _memo);
     _selectedCategory = widget.category;
-    _selectedSubCategory = widget.subcategory; // 상위 카테고리로 초기화
+    _selectedSubCategory = widget.subcategory;
     _fetchClothDetail();
   }
 
@@ -56,7 +56,7 @@ class _ClothDetailPageState extends State<ClothDetailPage> {
         body: jsonEncode(postData),
       );
 
-      print('응답 데이터: ${response.body}'); // 응답 데이터 출력
+      print('응답 데이터: ${response.body}');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);

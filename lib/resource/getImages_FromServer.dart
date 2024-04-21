@@ -19,6 +19,7 @@ Future<List<Map<String, dynamic>>> getImagesFromServer(String selectedSubCategor
       int clothNum = imageData['num'];
       images.add({'image': imageString, 'num': clothNum});
     }
+    //print(jsonData);
   } catch (error) {
     print('Error fetching images from server: $error');
   }

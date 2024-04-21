@@ -40,7 +40,6 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
   @override
   void initState() {
     super.initState();
-    // Select the default category when the screen loads
     _saveSelectedCategory(_selectedCategory!);
   }
 
@@ -100,8 +99,7 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
                                     builder: (context) => ClothDetailPage(
                                       image: items[index]['image']!,
                                       clothNum: items[index]['num'],
-                                      category:
-                                          _selectedCategory, // 선택한 상위 카테고리
+                                      category: _selectedCategory,
                                       subcategory: _selectedSubCategory,
                                     ),
                                   ),
