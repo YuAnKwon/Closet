@@ -226,7 +226,6 @@ class _AddLookBookState extends State<AddLookBook> {
                 // 사용자가 입력한 룩 이름 가져오기
                 String lookName = nameController.text;
                 _saveLookbookToServer(lookName);
-                Navigator.pop(context);
               },
               child: const Text('저장'),
             ),
@@ -282,6 +281,9 @@ class _AddLookBookState extends State<AddLookBook> {
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             fontSize: 16.0);
+
+        Navigator.pushNamedAndRemoveUntil(context, '/lookbook', (route) => false);
+
       } else {
         // 저장 실패에 대한 처리
         throw Exception('룩 저장에 실패하였습니다.');

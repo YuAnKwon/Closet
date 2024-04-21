@@ -128,9 +128,9 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
           child: Icon(Icons.add),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon:  Icon(Icons.accessibility_sharp),
               label: 'Look Book',
             ),
             BottomNavigationBarItem(
@@ -138,12 +138,14 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
               label: '옷장',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.business),
+              icon:  Icon(Icons.add_chart_sharp),
               label: '코디 추천',
             ),
           ],
+
           currentIndex: _pageNumber,
-          //selectedItemColor: Colors.amber[800],
+          //selectedItemColor: Color(0xB39A85),
+          elevation: 10,
           onTap: _onItemTapped,
         ),
       ),

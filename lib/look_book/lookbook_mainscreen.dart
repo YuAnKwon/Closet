@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import '../resource/back_handler.dart';
 import 'add_lookbook/add_lookbook_screen.dart';
 
-class LookbookPage extends StatefulWidget {
+class LookBookPage extends StatefulWidget {
   @override
-  _LookbookPageState createState() => _LookbookPageState();
+  _LookBookPageState createState() => _LookBookPageState();
 }
 
-class _LookbookPageState extends State<LookbookPage> {
+class _LookBookPageState extends State<LookBookPage> {
   int _pageNumber = 0;
 
   void _onItemTapped(int index) {
@@ -64,9 +64,9 @@ class _LookbookPageState extends State<LookbookPage> {
 
         // ---------NavigationBAR-------------
         bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon:  Icon(Icons.accessibility_sharp),
               label: 'Look Book',
             ),
             BottomNavigationBarItem(
@@ -74,12 +74,14 @@ class _LookbookPageState extends State<LookbookPage> {
               label: '옷장',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.business),
+              icon:  Icon(Icons.add_chart_sharp),
               label: '코디 추천',
             ),
           ],
+
           currentIndex: _pageNumber,
-          //selectedItemColor: Colors.amber[800],
+          //selectedItemColor: Color(0xB39A85),
+          elevation: 10,
           onTap: _onItemTapped,
         ),
       ),

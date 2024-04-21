@@ -14,7 +14,7 @@ class MyClosetApp extends StatelessWidget {
       title: '내 옷장',
       routes: {
         '/home': (BuildContext context) => ClosetHomePage(), // 기본 경로 (홈 화면)
-        '/lookbook': (BuildContext context) => LookbookPage(), // 룩북 홈 화면
+        '/lookbook': (BuildContext context) => LookBookPage(), // 룩북 홈 화면
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
