@@ -255,15 +255,16 @@ class _AddLookBookState extends State<AddLookBook> {
     try {
       List<Map<String, dynamic>> imageDataList = [];
 
-      // 상위 카테고리와 해당 이미지의 num만 보내기
+      // 아이템 목록 생성
       _selectedImages.forEach((category, image) {
         int clothNum = _selectedImages[category]!['num'];
-        imageDataList.add({category: clothNum});
+        imageDataList.add({ category: clothNum});
       });
 
       // 룩의 이름 추가
-      imageDataList.add({'lookname': lookName});
-      String jsonData = jsonEncode({'images': imageDataList});
+      imageDataList.add({"lookname": lookName});
+
+      String jsonData = jsonEncode({"items": imageDataList});
 
       var response = await http.post(
         Uri.parse('${ApiResource.serverUrl}/lookbook/add'),
@@ -273,7 +274,7 @@ class _AddLookBookState extends State<AddLookBook> {
 
       // 응답 처리
       if (response.statusCode == 200) {
-        print('전송한 데이터 입니다 !!!!!!!!!!!!!!!!!!!! ${jsonData}');
+        print('전송한 데이터입니다: $jsonData');
 
         Fluttertoast.showToast(
             msg: "성공적으로 등록되었습니다.",
@@ -283,19 +284,23 @@ class _AddLookBookState extends State<AddLookBook> {
             fontSize: 16.0);
 
         Navigator.pushNamedAndRemoveUntil(context, '/lookbook', (route) => false);
-
       } else {
+        print('전송한 데이터입니다: $jsonData');
+
         // 저장 실패에 대한 처리
-        throw Exception('룩 저장에 실패하였습니다.');
+        throw Exception('룩 저장에 실패하였습니다. Status Code: ${response.statusCode}, Body: ${response.body}');
       }
     } catch (error) {
       // 에러 처리
+      print(error);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('룩 저장에 실패하였습니다.'),
           backgroundColor: Colors.red,
         ),
       );
     }
   }
+
+
 }

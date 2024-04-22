@@ -61,6 +61,9 @@ class _ClothRegisterState extends State<ClothUpload> {
     return Scaffold(
       appBar: AppBar(
         title: Text('옷장 등록'),
+        centerTitle: true,
+        elevation: 10, //타이틀바 밑 그림자
+
       ),
       body: SingleChildScrollView(
         child: Padding(

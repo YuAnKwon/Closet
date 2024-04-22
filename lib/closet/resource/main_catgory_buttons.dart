@@ -44,22 +44,25 @@ class _CategorySubCategoryWidgetsState
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: widget.selectedCategory == category
-                        ? Colors.blue.withOpacity(0.8)
-                        : Colors.grey.withOpacity(0.5),
+                        ? Color(0xFFC7B3A3)
+                        : Color(0xFFF3F3F3),
                   ),
                   child: Image.asset(
-                    'assets/$category.png', // Update with your image path
+                    widget.selectedCategory == category
+                        ? 'assets/상의white.png'
+                        : 'assets/$category.png',
                     width: 40,
                     height: 40,
                     fit: BoxFit.cover,
                   ),
+
                 ),
-                SizedBox(height: 4), // Add spacing between the image and text
+                SizedBox(height: 4),
                 Text(
                   category,
                   style: TextStyle(
                     color: widget.selectedCategory == category
-                        ? Colors.blue
+                        ? Colors.black
                         : Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
@@ -90,17 +93,19 @@ class _CategorySubCategoryWidgetsState
                             subCategory,
                             style: TextStyle(
                               color: widget.selectedSubCategory == subCategory
-                                  ? Colors.white
+                                  ? Colors.black
                                   : Colors.black,
                             ),
                           ),
                           backgroundColor: widget.selectedSubCategory == subCategory
-                              ? Colors.blue
-                              : Colors.grey.withOpacity(0.3),
+                              ? Color(0xFFC7B3A3)
+                              : Color(0xFFF3F3F3),
                           elevation: 0,
-                          shape: StadiumBorder(
-                            side: BorderSide.none,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20), // Chip의 모서리를 둥글게 만듭니다.
+                            side: BorderSide(color: Colors.transparent), // 테두리 색상을 투명으로 만듭니다.
                           ),
+
                         ),
                       ),
                     ),

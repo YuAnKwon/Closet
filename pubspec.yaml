@@ -68,6 +68,11 @@ flutter:
     - assets/하의.png
     - assets/신발.png
     - assets/가방.png
+    - assets/상의white.png
+    - assets/하의white.png
+    - assets/신발white.png
+    - assets/가방white.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
