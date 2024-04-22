@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import '../resource/back_handler.dart';
-import '../resource/Categories.dart';
-import '../resource/getImages_FromServer.dart';
+import '../res/back_handler.dart';
+import '../res/Categories.dart';
+import '../res/getImages_FromServer.dart';
 import 'add_clothes/pic_toServer_screen.dart';
 import 'edit_delete_cloth/info_edit_screen.dart';
 import 'resource/main_catgory_buttons.dart';
@@ -52,6 +52,7 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
           title: Text('내 옷장'),
           centerTitle: true,
           automaticallyImplyLeading: false,
+
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,6 +127,8 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
           },
           tooltip: '옷 추가',
           child: Icon(Icons.add),
+          shape: CircleBorder(),
+
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: <BottomNavigationBarItem>[

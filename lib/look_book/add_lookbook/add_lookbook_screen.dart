@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:closet/api_resource/ApiResource.dart';
 import 'package:flutter/material.dart';
-import '../../closet/add_clothes/category_buttons.dart';
-import '../../resource/Categories.dart';
-import '../../resource/getImages_FromServer.dart';
+import '../../closet/resource/main_catgory_buttons.dart';
+import '../../res/Categories.dart';
+import '../../res/getImages_FromServer.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 

@@ -19,7 +19,7 @@ class MyClosetApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ClosetHomePage(),
+      home: LookBookPage(),
     );
   }
 }

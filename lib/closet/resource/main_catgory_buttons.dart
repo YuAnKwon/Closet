@@ -49,7 +49,7 @@ class _CategorySubCategoryWidgetsState
                   ),
                   child: Image.asset(
                     widget.selectedCategory == category
-                        ? 'assets/상의white.png'
+                        ? 'assets/$category.png'
                         : 'assets/$category.png',
                     width: 40,
                     height: 40,

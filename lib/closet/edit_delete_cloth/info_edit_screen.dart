@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:closet/api_resource/ApiResource.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../../resource/Categories.dart';
+import '../../res/Categories.dart';
 import '../add_clothes/category_buttons.dart';
 import 'delete_cloth_screen.dart';
 
