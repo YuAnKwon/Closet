@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:closet/api_resource/ApiResource.dart';
 import 'package:flutter/material.dart';
-import '../../closet/resource/main_catgory_buttons.dart';
-import '../../res/Categories.dart';
-import '../../res/getImages_FromServer.dart';
+import '../closet/res/main_catgory_buttons.dart';
+import '../res/Categories.dart';
+import '../res/getImages_FromServer.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -57,6 +57,7 @@ class _AddLookBookState extends State<AddLookBook> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('옷 선택'),
         centerTitle: true,
@@ -113,7 +114,6 @@ class _AddLookBookState extends State<AddLookBook> {
                         },
                       ),
           ),
-          SizedBox(height: 20),
           _buildSelectedImages(),
         ],
       ),
@@ -156,7 +156,6 @@ class _AddLookBookState extends State<AddLookBook> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 10),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal, // 가로 스크롤 지원
           child: Row(
@@ -190,14 +189,13 @@ class _AddLookBookState extends State<AddLookBook> {
             }).toList(),
           ),
         ),
-        SizedBox(height: 20),
         Center(
           child: ElevatedButton(
             onPressed: writeLookName,
             child: Text('선택 완료'),
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 10),
       ],
     );
   }
@@ -258,7 +256,7 @@ class _AddLookBookState extends State<AddLookBook> {
       // 아이템 목록 생성
       _selectedImages.forEach((category, image) {
         int clothNum = _selectedImages[category]!['num'];
-        imageDataList.add({ category: clothNum});
+        imageDataList.add({category: clothNum});
       });
 
       // 룩의 이름 추가
@@ -283,12 +281,14 @@ class _AddLookBookState extends State<AddLookBook> {
             timeInSecForIosWeb: 1,
             fontSize: 16.0);
 
-        Navigator.pushNamedAndRemoveUntil(context, '/lookbook', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/lookbook', (route) => false);
       } else {
         print('전송한 데이터입니다: $jsonData');
 
         // 저장 실패에 대한 처리
-        throw Exception('룩 저장에 실패하였습니다. Status Code: ${response.statusCode}, Body: ${response.body}');
+        throw Exception(
+            '룩 저장에 실패하였습니다. Status Code: ${response.statusCode}, Body: ${response.body}');
       }
     } catch (error) {
       // 에러 처리
@@ -301,6 +301,4 @@ class _AddLookBookState extends State<AddLookBook> {
       );
     }
   }
-
-
 }

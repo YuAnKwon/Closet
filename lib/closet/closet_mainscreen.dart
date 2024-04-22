@@ -7,7 +7,7 @@ import '../res/Categories.dart';
 import '../res/getImages_FromServer.dart';
 import 'add_clothes/pic_toServer_screen.dart';
 import 'edit_delete_cloth/info_edit_screen.dart';
-import 'resource/main_catgory_buttons.dart';
+import 'res/main_catgory_buttons.dart';
 
 class ClosetHomePage extends StatefulWidget {
   @override
@@ -126,7 +126,8 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
             );
           },
           tooltip: '옷 추가',
-          child: Icon(Icons.add),
+          child: Icon(Icons.add, color: Colors.white), // 아이콘 색상 흰색으로 설정
+          backgroundColor:Color(0xFFC7B3A3),
           shape: CircleBorder(),
 
         ),
@@ -145,9 +146,8 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
               label: '코디 추천',
             ),
           ],
-
+          selectedItemColor: Color(0xFFC7B3A3),
           currentIndex: _pageNumber,
-          //selectedItemColor: Color(0xB39A85),
           elevation: 10,
           onTap: _onItemTapped,
         ),
