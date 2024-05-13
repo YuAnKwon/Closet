@@ -42,11 +42,40 @@ class _ClothRegisterState extends State<ClothUpload> {
     final Map<String, dynamic> data =
         widget.responseData; // responseData를 사용하여 데이터 가져오기
     String imageString = data['image'];
+    ///String subCategory = data['category']; // 카테고리 데이터 가져오기
     Uint8List bytes = base64.decode(imageString);
     setState(() {
       _imageBytes = bytes;
     });
+    ///_categoryYesOrNo(subCategory);
   }
+ /* void _categoryYesOrNo(String subCategory) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('카테고리 확인'),
+          content: Text('이 옷은 subCategory 가 맞습니까?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // 사용자가 확인을 선택한 경우 선택된 카테고리로 진행
+                _saveSelectedCategory(subCategory);
+              },
+              child: Text('YES'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('NO'),
+            ),
+          ],
+        );
+      },
+    );
+  }*/
 
   String? _selectedSubCategory;
 
@@ -62,8 +91,7 @@ class _ClothRegisterState extends State<ClothUpload> {
       appBar: AppBar(
         title: Text('옷장 등록'),
         centerTitle: true,
-        elevation: 10, //타이틀바 밑 그림자
-
+        elevation: 10,
       ),
       body: SingleChildScrollView(
         child: Padding(
