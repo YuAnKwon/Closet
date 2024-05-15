@@ -36,20 +36,64 @@ class _ClothRegisterState extends State<ClothUpload> {
     _infoController.dispose();
     super.dispose();
   }
+  // 서버에서 받은 영어 카테고리를 한글로 변환하는 함수
+  String mapEnglishCategoryToKorean(String englishCategory) {
+    switch (englishCategory) {
+      case 't-shirt':
+        return '티셔츠';
+      case 'hoodie':
+        return '후드';
+      case 'shirt':
+        return '셔츠';
+      case 'neat':
+        return '니트';
+      case 'mantoman':
+        return '맨투맨';
+      case 'jacket':
+        return '자켓';
+      case 'jeans':
+        return '청바지';
+      case 'skirt':
+        return '치마';
+      case 'short':
+        return '반바지';
+      case 'training_pants':
+        return '트레이닝 바지';
+      case 'backpack':
+        return '백팩';
+      case 'crossbag':
+        return '크로스백';
+      case 'bucketbag':
+        return '버킷백';
+      case 'running_shoes':
+        return '운동화';
+      case 'dress_shoes':
+        return '구두';
+      case 'sandal':
+        return '샌들';
+      case 'boots':
+        return '부츠';
+      default:
+        return '기타';
+    }
+  }
 
-  // ----------배경제거된 이미지 받기------------------
+  // ----------배경제거된 이미지랑 카테고리 받기------------------
   void _getImageFromServer() async {
     final Map<String, dynamic> data =
         widget.responseData; // responseData를 사용하여 데이터 가져오기
     String imageString = data['image'];
-    ///String subCategory = data['category']; // 카테고리 데이터 가져오기
+    String subCategory = data['category']; // 카테고리 데이터 가져오기
     Uint8List bytes = base64.decode(imageString);
+    subCategory = mapEnglishCategoryToKorean(subCategory); // 영어 카테고리를 한글로 변환
     setState(() {
       _imageBytes = bytes;
     });
-    ///_categoryYesOrNo(subCategory);
+    print(subCategory);
+    _categoryYesOrNo(subCategory);
   }
- /* void _categoryYesOrNo(String subCategory) {
+
+  void _categoryYesOrNo(String subCategory) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -60,7 +104,6 @@ class _ClothRegisterState extends State<ClothUpload> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                // 사용자가 확인을 선택한 경우 선택된 카테고리로 진행
                 _saveSelectedCategory(subCategory);
               },
               child: Text('YES'),
@@ -75,7 +118,7 @@ class _ClothRegisterState extends State<ClothUpload> {
         );
       },
     );
-  }*/
+  }
 
   String? _selectedSubCategory;
 
