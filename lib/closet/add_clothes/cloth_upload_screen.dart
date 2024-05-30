@@ -16,7 +16,6 @@ class ClothUpload extends StatefulWidget {
   @override
   State<ClothUpload> createState() => _ClothRegisterState();
 }
-
 class _ClothRegisterState extends State<ClothUpload> {
   File? _image;
   Uint8List? _imageBytes;
@@ -28,7 +27,9 @@ class _ClothRegisterState extends State<ClothUpload> {
   @override
   void initState() {
     super.initState();
-    _getImageFromServer();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getImageFromServer();
+    });
   }
 
   @override
@@ -36,7 +37,7 @@ class _ClothRegisterState extends State<ClothUpload> {
     _infoController.dispose();
     super.dispose();
   }
-  // 서버에서 받은 영어 카테고리를 한글로 변환하는 함수
+
   String mapEnglishCategoryToKorean(String englishCategory) {
     switch (englishCategory) {
       case 't-shirt':
@@ -78,14 +79,12 @@ class _ClothRegisterState extends State<ClothUpload> {
     }
   }
 
-  // ----------배경제거된 이미지랑 카테고리 받기------------------
   void _getImageFromServer() async {
-    final Map<String, dynamic> data =
-        widget.responseData; // responseData를 사용하여 데이터 가져오기
+    final Map<String, dynamic> data = widget.responseData;
     String imageString = data['image'];
-    String subCategory = data['category']; // 카테고리 데이터 가져오기
+    String subCategory = data['category'];
     Uint8List bytes = base64.decode(imageString);
-    subCategory = mapEnglishCategoryToKorean(subCategory); // 영어 카테고리를 한글로 변환
+    subCategory = mapEnglishCategoryToKorean(subCategory);
     setState(() {
       _imageBytes = bytes;
     });
@@ -99,12 +98,12 @@ class _ClothRegisterState extends State<ClothUpload> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('카테고리 확인'),
-          content: Text('이 옷은 subCategory 가 맞습니까?'),
+          content: Text('이 옷은 $subCategory 맞습니까?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _saveSelectedCategory(subCategory);
+                _autoCheckCategory(subCategory);
               },
               child: Text('YES'),
             ),
@@ -118,6 +117,23 @@ class _ClothRegisterState extends State<ClothUpload> {
         );
       },
     );
+  }
+
+  void _autoCheckCategory(String subCategory) {
+    String? category;
+    for (var entry in subCategories.entries) {
+      if (entry.value.contains(subCategory)) {
+        category = entry.key;
+        break;
+      }
+    }
+
+    if (category != null) {
+      setState(() {
+        _selectedCategory = category;
+        _selectedSubCategory = subCategory;
+      });
+    }
   }
 
   String? _selectedSubCategory;
@@ -186,7 +202,6 @@ class _ClothRegisterState extends State<ClothUpload> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // 저장 버튼 눌렀을 때 실행될 코드
                     _saveClothInformation(_selectedSubCategory);
                   },
                   child: Text('저장'),
@@ -241,14 +256,10 @@ class _ClothRegisterState extends State<ClothUpload> {
     );
   }
 
-
   void _saveClothInformation(String? subCategory) {
-    // TextFormField에서 텍스트 가져오기
     String info = _infoController.text;
 
-    // 필요한 모든 데이터가 있는지 확인
     if (subCategory != null) {
-      // 서버에 보낼 데이터 준비
       Map<String, dynamic> clothData = {
         'image': widget.responseData['filename'],
         'category': subCategory,
@@ -257,7 +268,6 @@ class _ClothRegisterState extends State<ClothUpload> {
       print(widget.responseData['filename']);
       sendDataToServer(clothData);
     } else {
-      // 카테고리가 선택되지 않은 경우 toast 표시
       Fluttertoast.showToast(
         msg: "카테고리를 선택해주세요",
         toastLength: Toast.LENGTH_SHORT,
@@ -269,40 +279,31 @@ class _ClothRegisterState extends State<ClothUpload> {
 
   Future<void> sendDataToServer(Map<String, dynamic> data) async {
     try {
-      // 서버 URL 설정
-      String serverUrl =
-          '${ApiResource.serverUrl}/closet/dbsave';
-
-      // 데이터를 JSON 형식으로 인코딩
+      String serverUrl = '${ApiResource.serverUrl}/closet/dbsave';
       String jsonData = json.encode(data);
 
-      // HTTP POST 요청 보내기
       var response = await http.post(
         Uri.parse(serverUrl),
         body: jsonData,
         headers: {'Content-Type': 'application/json'},
       );
 
-      // 응답 확인
       if (response.statusCode == 200) {
         print('전송한 데이터 입니다 !!!!!!!!!!!!!!!!!!!!${jsonData} ');
 
         Fluttertoast.showToast(
-            msg: "성공적으로 등록되었습니다.",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 16.0);
-        // 서버가 성공적으로 응답한 경우
+          msg: "성공적으로 등록되었습니다.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 16.0,
+        );
         print('데이터 전송 성공');
-        // 다음 화면으로 이동
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-    } else {
-        // 오류가 발생한 경우
+      } else {
         print('HTTP 오류: ${response.reasonPhrase}');
       }
     } catch (e) {
-      // 예외 처리
       print('오류 발생: $e');
     }
   }
