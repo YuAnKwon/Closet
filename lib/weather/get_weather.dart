@@ -6,7 +6,7 @@ Future<void> getWeatherData(Function(double, String, String) onDataLoaded, Funct
   Position position;
   try {
     position = await _determinePosition();
-    String apiKey = '';
+    String apiKey = '125aa18fbbae6d4c93f20fdd0279b39b';
     String url =
         'https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=$apiKey&units=metric&lang=kr';
 

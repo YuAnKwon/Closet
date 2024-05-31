@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:closet/weather/weather_cloth.dart';
 import 'package:flutter/material.dart';
 import 'get_weather.dart';
@@ -13,23 +14,34 @@ class _WeatherPageState extends State<WeatherPage> {
   String? _weatherIcon;
   bool _isLoading = true;
 
+  final RecommendCloth recommendCloth = RecommendCloth();
   @override
   void initState() {
     super.initState();
-    _loadWeatherData();
-  }
-
-  void _loadWeatherData() {
     getWeatherData(_onDataLoaded, _onError);
   }
 
+  // 날씨데이터
   void _onDataLoaded(double temperature, String description, String icon) {
     setState(() {
       _temperature = temperature;
       _weatherDescription = description;
       _weatherIcon = icon;
       _isLoading = false;
+
+      // 날씨 데이터를 가져온 후에 옷 데이터
+      _loadClothingImages();
     });
+  }
+
+
+  Future<void> _loadClothingImages() async {
+    try {
+      await recommendCloth.loadClothingImages();
+      setState(() {});
+    } catch (error) {
+      _onError(error.toString());
+    }
   }
 
   void _onError(String message) {
@@ -59,11 +71,11 @@ class _WeatherPageState extends State<WeatherPage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-    List<String> topClothing = getTopClothingRecommendations(_temperature ?? 0);
-    List<String> bottomClothing = getTopClothingRecommendations(_temperature ?? 0);
+    List<String> topClothing = recommendCloth.ClothRecommend(_temperature ?? 0);
+    List<String> bottomClothing = recommendCloth.ClothRecommend(_temperature ?? 0);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('날씨 코디 추천'),
@@ -118,10 +130,7 @@ class _WeatherPageState extends State<WeatherPage> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(20.0), // 여기에 패딩을 추가합니다
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-              ),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -133,14 +142,14 @@ class _WeatherPageState extends State<WeatherPage> {
                     ),
                   ),
                   SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildClothingBox(topClothing[0]),
-                    SizedBox(width: 10),
-                    if (topClothing.length > 1) _buildClothingBox(topClothing[1]),
-                  ],
-                ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildClothingBox(topClothing[0]),
+                      SizedBox(width: 10),
+                      if (topClothing.length > 1) _buildClothingBox(topClothing[1]),
+                    ],
+                  ),
                   SizedBox(height: 20),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -166,31 +175,35 @@ class _WeatherPageState extends State<WeatherPage> {
       ),
     );
   }
+
   Widget _buildClothingBox(String clothing) {
+    String imageUrl = recommendCloth.getClothingImage(clothing);
+
+    // 이미지가 base64 문자열인지 확인
+    bool isBase64 = !imageUrl.startsWith('data:image') && !imageUrl.startsWith('assets');
+
     return Container(
-      width: 160,
-      height: 160,
+      width: 100,
+      height: 100,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.blueGrey),
+        borderRadius: BorderRadius.circular(10),
+        image: imageUrl.isNotEmpty && isBase64
+            ? DecorationImage(
+          image: MemoryImage(base64Decode(imageUrl)),
+          fit: BoxFit.cover,
+        )
+            : imageUrl.isNotEmpty && !isBase64
+            ? DecorationImage(
+          image: AssetImage(imageUrl), // base64가 아닌 경우 이미지 경로를 사용
+          fit: BoxFit.cover,
+        )
+            : null,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            getClothingImage(clothing),
-            fit: BoxFit.cover,
-            width: 120,
-            height: 120,
-          ),
-          SizedBox(height: 8),
-          Text(
-            clothing,
-            style: TextStyle(fontSize: 14),
-          ),
-        ],
-      ),
+      child: imageUrl.isEmpty
+          ? Center(child: Text(clothing, textAlign: TextAlign.center))
+          : null,
     );
   }
+
 }

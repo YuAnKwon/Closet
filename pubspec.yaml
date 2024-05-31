@@ -76,6 +76,23 @@ flutter:
     - assets/신발white.png
     - assets/가방white.png
 
+    - assets/weathercloth/기모바지1.png
+    - assets/weathercloth/기모바지2.png
+    - assets/weathercloth/롱패딩1.png
+    - assets/weathercloth/롱패딩2.png
+    - assets/weathercloth/면바지1.png
+    - assets/weathercloth/면바지2.png
+    - assets/weathercloth/민소매1.png
+    - assets/weathercloth/민소매2.png
+    - assets/weathercloth/슬랙스1.png
+    - assets/weathercloth/슬랙스2.png
+    - assets/weathercloth/코트1.png
+    - assets/weathercloth/코트2.png
+    - assets/weathercloth/트랜치코트1.png
+    - assets/weathercloth/트랜치코트2.png
+    - assets/weathercloth/패딩1.png
+    - assets/weathercloth/패딩2.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
