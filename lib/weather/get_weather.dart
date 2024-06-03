@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 
-Future<void> getWeatherData(Function(double, String, String, double, double, int, int?) onDataLoaded, Function(String) onError) async {
+Future<void> getWeatherData(Function(double, String, String, double, double, int, double) onDataLoaded, Function(String) onError) async {
   Position position;
   try {
     position = await _determinePosition();
@@ -16,10 +16,7 @@ Future<void> getWeatherData(Function(double, String, String, double, double, int
       double minTemp = weatherData['main']['temp_min'];
       double maxTemp = weatherData['main']['temp_max'];
       int humidity = weatherData['main']['humidity'];
-
-      // 강수 확률 가져오기
-      int? precipProbability = weatherData['pop'] != null ? (weatherData['pop'] * 100).round() : null;
-
+      double windSpeed = weatherData['wind']['speed'];
       onDataLoaded(
           weatherData['main']['temp'],
           weatherData['weather'][0]['description'],
@@ -27,7 +24,7 @@ Future<void> getWeatherData(Function(double, String, String, double, double, int
           minTemp,
           maxTemp,
           humidity,
-          precipProbability
+          windSpeed
       );
     } else {
       throw Exception('Failed to load weather data');

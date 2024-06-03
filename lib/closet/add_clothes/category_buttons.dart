@@ -60,7 +60,7 @@ class CategorySubCategoryWidgets extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: subCategoryList
             .map((subCategory) => Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: 8,vertical:5),
           child: ElevatedButton(
             onPressed: () {
               onSubCategorySelected(subCategory);

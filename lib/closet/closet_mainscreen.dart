@@ -8,6 +8,8 @@ import '../res/getImages_FromServer.dart';
 import 'add_clothes/pic_toServer_screen.dart';
 import 'edit_delete_cloth/info_edit_screen.dart';
 import 'res/main_catgory_buttons.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 
 class ClosetHomePage extends StatefulWidget {
   @override
@@ -34,7 +36,7 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
       Navigator.pushReplacementNamed(context, '/lookbook'); // 룩북 페이지로 이동
     }
     if (_pageNumber == 2) {
-      Navigator.pushReplacementNamed(context, '/weather');
+      Navigator.pushReplacementNamed(context, '/recommend');
     }
   }
 
@@ -55,8 +57,6 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
           title: Text('내 옷장'),
           centerTitle: true,
           automaticallyImplyLeading: false,
-          elevation: 1.0,
-
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,8 +76,14 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
             ),
             SizedBox(height: 20),
             Expanded(
-              child: _isLoading
-                  ? Center(child: CircularProgressIndicator())
+              child: // 로딩 표시
+              _isLoading
+                  ? Center(
+                child: LoadingAnimationWidget.waveDots(
+                  color: Color(0xFFC7B3A3),
+                  size: 60.0,
+                ),
+              )
                   : items.isEmpty
                       ? Center(
                           child: Text(
@@ -145,7 +151,7 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
               label: 'Look Book',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
               label: '옷장',
             ),
             BottomNavigationBarItem(

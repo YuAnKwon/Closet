@@ -53,6 +53,7 @@ dev_dependencies:
   flutter_dotenv: ^5.1.0
   geolocator: ^12.0.0
   permission_handler: ^11.3.1
+  loading_animation_widget: ^1.2.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -94,6 +95,14 @@ flutter:
     - assets/weathercloth/패딩2.png
     - assets/bottom_icon/lookbook.png
     - assets/bottom_icon/recommend.png
+    - assets/weather_icon/cloud.png
+    - assets/weather_icon/up.png
+    - assets/weather_icon/down.png
+    - assets/weather_icon/humidity.png
+    - assets/weather_icon/wind.png
+    - assets/weather_icon/sun.png
+    - assets/img/weather.png
+    - assets/img/body_type.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

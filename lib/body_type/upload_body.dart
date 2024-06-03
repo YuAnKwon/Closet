@@ -3,20 +3,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../api_resource/ApiResource.dart';
-import 'cloth_upload_screen.dart';
+import 'BodyType_Classifier.dart';
 
-class CameraCapture extends StatefulWidget {
+class UploadBody extends StatefulWidget {
   @override
-  _CameraCaptureState createState() => _CameraCaptureState();
+  _UploadBodyState createState() => _UploadBodyState();
 }
 
-class _CameraCaptureState extends State<CameraCapture> {
-  XFile? _image; // 이미지를 담을 변수 선언
-  final ImagePicker picker = ImagePicker(); // ImagePicker 초기화
-  bool _loading = false; // 로딩 상태 변수 추가
+class _UploadBodyState extends State<UploadBody> {
+  XFile? _image;
+  final ImagePicker picker = ImagePicker();
+  bool _loading = false;
 
   // 이미지를 가져오는 함수
   Future getImage(ImageSource imageSource) async {
@@ -25,7 +24,7 @@ class _CameraCaptureState extends State<CameraCapture> {
     );
     if (pickedFile != null) {
       setState(() {
-        _image = XFile(pickedFile.path); // 가져온 이미지를 _image에 저장
+        _image = XFile(pickedFile.path);
       });
     }
   }
@@ -35,14 +34,16 @@ class _CameraCaptureState extends State<CameraCapture> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("옷 사진 등록"),
+          title: Text("나의 체형에 맞는 패션은?"),
           centerTitle: true,
+          elevation: 1.0,
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 30, width: double.infinity),
             _buildPhotoArea(),
+            SizedBox(height: 20),
             SizedBox(height: 20),
             _buildButton(),
             SizedBox(height: 30),
@@ -57,19 +58,13 @@ class _CameraCaptureState extends State<CameraCapture> {
               child: Text("사진 등록"),
             ),
             // 로딩 표시
-            // 로딩 표시
-            if (_loading)
-              LoadingAnimationWidget.staggeredDotsWave(
-                color: Color(0xFFC7B3A3),
-                size: 50.0,
-              ),
+            if (_loading) CircularProgressIndicator(),
           ],
         ),
       ),
     );
   }
 
-  // 버튼 위젯
   Widget _buildPhotoArea() {
     return _image != null
         ? Container(
@@ -81,8 +76,22 @@ class _CameraCaptureState extends State<CameraCapture> {
       width: 300,
       height: 300,
       color: Colors.grey[400],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '자신의 체형이 잘 드러나는 사진을 \n 업로드 해주세요',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
+
 
   Widget _buildButton() {
     return Row(
@@ -90,14 +99,14 @@ class _CameraCaptureState extends State<CameraCapture> {
       children: [
         ElevatedButton(
           onPressed: () {
-            getImage(ImageSource.camera); // getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
+            getImage(ImageSource.camera); // 카메라로 찍은 사진 가져오기
           },
           child: Text("카메라"),
         ),
         SizedBox(width: 30),
         ElevatedButton(
           onPressed: () {
-            getImage(ImageSource.gallery); // getImage 함수를 호출해서 갤러리에서 사진 가져오기
+            getImage(ImageSource.gallery); // 갤러리에서 사진 가져오기
           },
           child: Text("갤러리"),
         ),
@@ -122,26 +131,20 @@ class _CameraCaptureState extends State<CameraCapture> {
 
       // Send POST request to the server
       var response = await dio.post(
-        ApiResource.serverUrl + '/closet/upload',
+        ApiResource.serverUrl + '/bodyupload',
         data: formData,
       );
 
-      // Check response from the server
       print('응답 데이터: ${response.data}');
 
-      // Navigate to another page after uploading the image
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ClothUpload(responseData: response.data)),
+        MaterialPageRoute(builder: (context) => BodyTypeClassifier(responseData: response.data)),
       );
     } catch (e) {
       // Handle exceptions and show alert if failed
       print('업로드 실패: $e');
-      if (e is DioError && e.response != null && e.response!.statusCode == 400 && e.response!.data['error'] == 'Image already exists in the database') {
-        showAlertDialog(context, '동일한 이미지가 이미 등록되었습니다.');
-      } else {
         showAlertDialog(context, '이미지 업로드에 실패했습니다.');
-      }
     } finally {
       setState(() {
         _loading = false; // End loading state
@@ -171,3 +174,4 @@ class _CameraCaptureState extends State<CameraCapture> {
     );
   }
 }
+

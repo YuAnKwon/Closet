@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:closet/weather/weather_cloth.dart';
 import 'package:flutter/material.dart';
 import 'get_weather.dart';
-
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 class WeatherPage extends StatefulWidget {
   @override
   _WeatherPageState createState() => _WeatherPageState();
@@ -15,11 +15,10 @@ class _WeatherPageState extends State<WeatherPage> {
   double? _minTemperature;
   double? _maxTemperature;
   int? _humidity;
-  int? _precipProbability;
+  double? _windSpeed;
 
   bool _isLoading = true;
   String? _errorMessage;
-  int _pageNumber = 2;
 
   final RecommendCloth recommendCloth = RecommendCloth();
   final Map<String, String> _clothingImages = {};
@@ -32,7 +31,7 @@ class _WeatherPageState extends State<WeatherPage> {
 
   // 날씨데이터
   void _onDataLoaded(double temperature, String description, String icon,
-      double minTemp, double maxTemp, int humidity, int? precipProbability) {
+      double minTemp, double maxTemp, int humidity, double windSpeed) {
     setState(() {
       _temperature = temperature;
       _weatherDescription = description;
@@ -40,7 +39,7 @@ class _WeatherPageState extends State<WeatherPage> {
       _minTemperature = minTemp;
       _maxTemperature = maxTemp;
       _humidity = humidity;
-      _precipProbability = precipProbability;
+      _windSpeed = windSpeed;
       _isLoading = false;
 
       // 날씨 데이터를 가져온 후에 옷 데이터
@@ -79,7 +78,10 @@ class _WeatherPageState extends State<WeatherPage> {
         elevation: 1.0,
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: LoadingAnimationWidget.stretchedDots(
+        color: Color(0xFFC7B3A3),
+        size: 60.0,
+      ))
           : SingleChildScrollView(
               // SingleChildScrollView 추가
               child: Padding(
@@ -89,7 +91,7 @@ class _WeatherPageState extends State<WeatherPage> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blueGrey),
+                        border: Border.all(color:Colors.blueGrey),
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Padding(
@@ -101,11 +103,26 @@ class _WeatherPageState extends State<WeatherPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.network(
-                                    'http://openweathermap.org/img/wn/$_weatherIcon@2x.png',
-                                    width: 100,
-                                    height: 100,
+                                  Container(
+                                    child: _weatherDescription == '구름조금'
+                                        ? Image.asset(
+                                      'assets/weather_icon/cloud.png',
+                                      width: 90,
+                                      height: 90,
+                                    )
+                                        : _weatherDescription == '맑음'
+                                        ? Image.asset(
+                                      'assets/weather_icon/sun.png',
+                                      width: 90,
+                                      height: 90,
+                                    )
+                                        : Image.network(
+                                      'http://openweathermap.org/img/wn/$_weatherIcon@2x.png',
+                                      width: 100,
+                                      height: 100,
+                                    ),
                                   ),
+
                                   SizedBox(width: 10),
                                   Column(
                                     crossAxisAlignment:
@@ -113,7 +130,10 @@ class _WeatherPageState extends State<WeatherPage> {
                                     children: [
                                       Text(
                                         '${_temperature?.toStringAsFixed(1)}°C',
-                                        style: TextStyle(fontSize: 32),
+                                        style: TextStyle(
+                                          fontSize: 32,
+                                          color: Color(0xFFC7B3A3),
+                                        ),
                                       ),
                                       Text(
                                         '$_weatherDescription',
@@ -127,27 +147,52 @@ class _WeatherPageState extends State<WeatherPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                Image.asset(
+                                  'assets/weather_icon/down.png',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                SizedBox(width: 5),
                                 Text(
-                                  '최저: ${_minTemperature?.toStringAsFixed(1)}°C',
+                                  '${_minTemperature?.toStringAsFixed(1)}°C',
                                   style: TextStyle(fontSize: 16),
                                 ),
                                 SizedBox(width: 30),
+                                Image.asset(
+                                  'assets/weather_icon/up.png',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                SizedBox(width: 5),
                                 Text(
-                                  '최고: ${_maxTemperature?.toStringAsFixed(1)}°C',
+                                  '${_maxTemperature?.toStringAsFixed(1)}°C',
                                   style: TextStyle(fontSize: 16),
                                 ),
                               ],
                             ),
+                            SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                Image.asset(
+                                  'assets/weather_icon/humidity.png',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                SizedBox(width: 5),
                                 Text(
-                                  '습도: $_humidity%',
+                                  '$_humidity%',
                                   style: TextStyle(fontSize: 16),
                                 ),
-                                SizedBox(width: 30),
+                                SizedBox(width: 40),
+                                Image.asset(
+                                  'assets/weather_icon/wind.png',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                SizedBox(width: 5),
                                 Text(
-                                  '강수확률: $_precipProbability%',
+                                  '${_windSpeed?.toStringAsFixed(1)} m/s',
                                   style: TextStyle(fontSize: 16),
                                 ),
                               ],
@@ -156,7 +201,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     Container(
                       padding: const EdgeInsets.all(20.0),
                       child: Center(
@@ -178,7 +223,7 @@ class _WeatherPageState extends State<WeatherPage> {
                                   _buildClothingBox(topClothing[1]),
                               ],
                             ),
-                            SizedBox(height: 30),
+                            SizedBox(height: 20),
                             Text(
                               '하의',
                               style: TextStyle(
@@ -202,42 +247,6 @@ class _WeatherPageState extends State<WeatherPage> {
                 ),
               ),
             ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage("assets/bottom_icon/lookbook.png"),
-              size: 24,
-            ),
-            label: 'Look Book',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '옷장',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage("assets/bottom_icon/recommend.png"),
-              size: 24,
-            ),
-            label: '코디 추천',
-          ),
-        ],
-        currentIndex: _pageNumber,
-        selectedItemColor: Color(0xFFC7B3A3),
-        elevation: 10,
-        onTap: (index) {
-          setState(() {
-            _pageNumber = index;
-          });
-          if (_pageNumber == 0) {
-            Navigator.pushReplacementNamed(context, '/lookbook');
-          }
-          if (_pageNumber == 1) {
-            Navigator.pushReplacementNamed(context, '/home');
-          }
-        },
-      ),
     );
   }
 
@@ -263,7 +272,7 @@ class _WeatherPageState extends State<WeatherPage> {
                   )
                 : Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blueGrey),
+                      border: Border.all(color:Colors.blueGrey),
                       borderRadius: BorderRadius.circular(10),
                       image: localImageUrl.isNotEmpty && isLocalBase64
                           ? DecorationImage(
@@ -277,9 +286,13 @@ class _WeatherPageState extends State<WeatherPage> {
                                 )
                               : null,
                     ),
-                    child: localImageUrl.isNotEmpty ? null
+                    child: localImageUrl.isNotEmpty
+                        ? null
                         : Center(
-                            child: CircularProgressIndicator(),
+                            child:LoadingAnimationWidget.waveDots(
+                              color: Color(0xFFC7B3A3),
+                              size: 50.0,
+                            ),
                           ),
                   ),
           ),

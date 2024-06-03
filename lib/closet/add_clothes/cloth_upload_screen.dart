@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../api_resource/ApiResource.dart';
 import '../../res/Categories.dart';
 import 'category_buttons.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ClothUpload extends StatefulWidget {
   final Map<String, dynamic> responseData;
@@ -227,7 +228,10 @@ class _ClothRegisterState extends State<ClothUpload> {
           ? Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(),
+          LoadingAnimationWidget.staggeredDotsWave(
+            color: Color(0xFFC7B3A3),
+            size: 50.0,
+          ),
           SizedBox(height: 20),
           Text(
             '사진 불러오는 중...',
@@ -250,7 +254,10 @@ class _ClothRegisterState extends State<ClothUpload> {
               fontSize: 17,
             ),
           )
-              : CircularProgressIndicator(),
+              : LoadingAnimationWidget.staggeredDotsWave(
+            color: Color(0xFFC7B3A3),
+            size: 50.0,
+          ),
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../api_resource/ApiResource.dart';
 import 'add_lookbook_screen.dart';
@@ -124,7 +125,7 @@ class _LookBookPageState extends State<LookBookPage> {
           ],
         ),
       ),
-      color: Colors.grey[100], // 카드의 배경색 설정
+      color: Color(0xFFEDE4DA), // 카드의 배경색 설정
     );
   }
 
@@ -134,7 +135,10 @@ class _LookBookPageState extends State<LookBookPage> {
       future: _fetchClothingImage(clothingId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return LoadingAnimationWidget.bouncingBall(
+            color: Color(0xFFC7B3A3),
+            size: 50.0,
+          );
         } else if (snapshot.hasError) {
           return Text('이미지 불러오기 실패');
         } else {
@@ -171,7 +175,6 @@ class _LookBookPageState extends State<LookBookPage> {
         appBar: AppBar(
           title: Text('나만의 LookBook'),
           centerTitle: true,
-          elevation: 1.0,
         ),
         body: ListView.builder(
           itemCount: lookBooks.length,
@@ -201,7 +204,7 @@ class _LookBookPageState extends State<LookBookPage> {
               label: 'Look Book',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
               label: '옷장',
             ),
             BottomNavigationBarItem(
@@ -223,7 +226,7 @@ class _LookBookPageState extends State<LookBookPage> {
               Navigator.pushReplacementNamed(context, '/home');
             }
             if (_pageNumber == 2) {
-              Navigator.pushReplacementNamed(context, '/weather');
+              Navigator.pushReplacementNamed(context, '/recommend');
             }
           },
         ),
