@@ -7,9 +7,7 @@ import '../api_resource/ApiResource.dart';
 class RecommendCloth {
   final Map<String, String> _clothingImages = {};
 
-  Future<void> loadClothingImages() async {
-    List<String> clothingItems = ['티셔츠', '셔츠', '후드', '맨투맨', '자켓', '니트', '반바지', '청바지', '치마', '트레이닝 바지'];
-
+  Future<void> loadClothingImages(List<String> clothingItems) async {
     for (String category in clothingItems) {
       try {
         final response = await http.get(

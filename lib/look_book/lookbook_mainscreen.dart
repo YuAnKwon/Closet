@@ -171,6 +171,7 @@ class _LookBookPageState extends State<LookBookPage> {
         appBar: AppBar(
           title: Text('나만의 LookBook'),
           centerTitle: true,
+          elevation: 1.0,
         ),
         body: ListView.builder(
           itemCount: lookBooks.length,
@@ -193,7 +194,10 @@ class _LookBookPageState extends State<LookBookPage> {
         bottomNavigationBar: BottomNavigationBar(
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.accessibility_sharp),
+              icon: ImageIcon(
+                AssetImage("assets/bottom_icon/lookbook.png"),
+                size: 24,
+              ),
               label: 'Look Book',
             ),
             BottomNavigationBarItem(
@@ -201,7 +205,10 @@ class _LookBookPageState extends State<LookBookPage> {
               label: '옷장',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add_chart_sharp),
+              icon: ImageIcon(
+                AssetImage("assets/bottom_icon/recommend.png"),
+                size: 24,
+              ),
               label: '코디 추천',
             ),
           ],
@@ -214,6 +221,9 @@ class _LookBookPageState extends State<LookBookPage> {
             });
             if (_pageNumber == 1) {
               Navigator.pushReplacementNamed(context, '/home');
+            }
+            if (_pageNumber == 2) {
+              Navigator.pushReplacementNamed(context, '/weather');
             }
           },
         ),

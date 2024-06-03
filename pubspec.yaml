@@ -92,6 +92,8 @@ flutter:
     - assets/weathercloth/트랜치코트2.png
     - assets/weathercloth/패딩1.png
     - assets/weathercloth/패딩2.png
+    - assets/bottom_icon/lookbook.png
+    - assets/bottom_icon/recommend.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

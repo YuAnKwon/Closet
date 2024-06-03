@@ -33,6 +33,9 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
     if (_pageNumber == 0) {
       Navigator.pushReplacementNamed(context, '/lookbook'); // 룩북 페이지로 이동
     }
+    if (_pageNumber == 2) {
+      Navigator.pushReplacementNamed(context, '/weather');
+    }
   }
 
   DateTime? currentBackPressTime;
@@ -52,6 +55,7 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
           title: Text('내 옷장'),
           centerTitle: true,
           automaticallyImplyLeading: false,
+          elevation: 1.0,
 
         ),
         body: Column(
@@ -134,7 +138,10 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
         bottomNavigationBar: BottomNavigationBar(
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon:  Icon(Icons.accessibility_sharp),
+              icon: ImageIcon(
+                AssetImage("assets/bottom_icon/lookbook.png"),
+                size: 24,
+              ),
               label: 'Look Book',
             ),
             BottomNavigationBarItem(
@@ -142,12 +149,15 @@ class _ClosetHomePageState extends State<ClosetHomePage> {
               label: '옷장',
             ),
             BottomNavigationBarItem(
-              icon:  Icon(Icons.add_chart_sharp),
+              icon: ImageIcon(
+                AssetImage("assets/bottom_icon/recommend.png"),
+                size: 24,
+              ),
               label: '코디 추천',
             ),
           ],
-          selectedItemColor: Color(0xFFC7B3A3),
           currentIndex: _pageNumber,
+          selectedItemColor: Color(0xFFC7B3A3),
           elevation: 10,
           onTap: _onItemTapped,
         ),

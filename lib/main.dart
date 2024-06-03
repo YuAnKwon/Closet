@@ -20,11 +20,12 @@ class MyClosetApp extends StatelessWidget {
       routes: {
         '/home': (BuildContext context) => ClosetHomePage(), // 기본 경로 (홈 화면)
         '/lookbook': (BuildContext context) => LookBookPage(), // 룩북 홈 화면
+        '/weather': (BuildContext context) => WeatherPage(), // 날씨 화면
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: WeatherPage(),
+      home: ClosetHomePage(),
     );
   }
   Future<void> initializeApp() async {
