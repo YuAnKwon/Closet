@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../api_resource/ApiResource.dart';
 import 'BodyType_Classifier.dart';
@@ -55,10 +56,14 @@ class _UploadBodyState extends State<UploadBody> {
                   print('이미지를 선택하세요.');
                 }
               },
-              child: Text("사진 등록"),
+              child: Text("사진 업로드"),
             ),
             // 로딩 표시
-            if (_loading) CircularProgressIndicator(),
+            if (_loading)
+              LoadingAnimationWidget.staggeredDotsWave(
+                color: Color(0xFFC7B3A3),
+                size: 50.0,
+              ),
           ],
         ),
       ),
@@ -68,30 +73,29 @@ class _UploadBodyState extends State<UploadBody> {
   Widget _buildPhotoArea() {
     return _image != null
         ? Container(
-      width: 300,
-      height: 300,
-      child: Image.file(File(_image!.path)), // 가져온 이미지를 화면에 띄워주는 코드
-    )
+            width: 300,
+            height: 300,
+            child: Image.file(File(_image!.path)), // 가져온 이미지를 화면에 띄워주는 코드
+          )
         : Container(
-      width: 300,
-      height: 300,
-      color: Colors.grey[400],
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '자신의 체형이 잘 드러나는 사진을 \n 업로드 해주세요',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.white,
+            width: 300,
+            height: 300,
+            color: Colors.grey[400],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '자신의 체형이 잘 드러나는 사진을 \n 업로드 해주세요',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
+          );
   }
-
 
   Widget _buildButton() {
     return Row(
@@ -139,19 +143,20 @@ class _UploadBodyState extends State<UploadBody> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => BodyTypeClassifier(responseData: response.data)),
+        MaterialPageRoute(
+            builder: (context) =>
+                BodyTypeClassifier(responseData: response.data)),
       );
     } catch (e) {
       // Handle exceptions and show alert if failed
       print('업로드 실패: $e');
-        showAlertDialog(context, '이미지 업로드에 실패했습니다.');
+      showAlertDialog(context, '이미지 업로드에 실패했습니다.');
     } finally {
       setState(() {
         _loading = false; // End loading state
       });
     }
   }
-
 
   // 알림 창 표시
   void showAlertDialog(BuildContext context, String message) {
@@ -174,4 +179,3 @@ class _UploadBodyState extends State<UploadBody> {
     );
   }
 }
-
