@@ -68,14 +68,14 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/상의.png
-    - assets/하의.png
-    - assets/신발.png
-    - assets/가방.png
-    - assets/상의white.png
-    - assets/하의white.png
-    - assets/신발white.png
-    - assets/가방white.png
+    - assets/category/상의.png
+    - assets/category/하의.png
+    - assets/category/신발.png
+    - assets/category/가방.png
+    - assets/category/상의white.png
+    - assets/category/하의white.png
+    - assets/category/신발white.png
+    - assets/category/가방white.png
 
     - assets/weathercloth/기모바지1.png
     - assets/weathercloth/기모바지2.png
@@ -93,6 +93,7 @@ flutter:
     - assets/weathercloth/트랜치코트2.png
     - assets/weathercloth/패딩1.png
     - assets/weathercloth/패딩2.png
+
     - assets/bottom_icon/lookbook.png
     - assets/bottom_icon/recommend.png
     - assets/weather_icon/cloud.png
@@ -101,8 +102,47 @@ flutter:
     - assets/weather_icon/humidity.png
     - assets/weather_icon/wind.png
     - assets/weather_icon/sun.png
+
     - assets/img/weather.png
     - assets/img/body_type.png
+    - assets/img/body_ex.png
+    - assets/img/cloth_ex.png
+
+    - assets/body_type/hourglass/hourglass_1.jpg
+    - assets/body_type/hourglass/hourglass_2.jpg
+    - assets/body_type/hourglass/hourglass_3.jpg
+    - assets/body_type/hourglass/hourglass_4.jpg
+    - assets/body_type/hourglass/hourglass_5.jpg
+    - assets/body_type/hourglass/hourglass_6.jpg
+    - assets/body_type/hourglass/hourglass_7.jpg
+
+    - assets/body_type/round/round_1.jpg
+    - assets/body_type/round/round_2.jpg
+    - assets/body_type/round/round_3.jpg
+    - assets/body_type/round/round_4.jpg
+    - assets/body_type/round/round_5.jpg
+    - assets/body_type/round/round_6.jpg
+    - assets/body_type/round/round_7.jpg
+
+    - assets/body_type/straight/straight_1.png
+    - assets/body_type/straight/straight_2.jpg
+    - assets/body_type/straight/straight_3.jpg
+    - assets/body_type/straight/straight_4.jpg
+    - assets/body_type/straight/straight_5.jpg
+    - assets/body_type/straight/straight_6.jpg
+    - assets/body_type/straight/straight_7.jpg
+
+    - assets/body_type/triangle/triangle_1.jpg
+    - assets/body_type/triangle/triangle_2.jpg
+    - assets/body_type/triangle/triangle_3.jpg
+    - assets/body_type/triangle/triangle_4.jpg
+    - assets/body_type/triangle/triangle_5.jpg
+    - assets/body_type/triangle/triangle_6.jpg
+    - assets/body_type/triangle/triangle_7.jpg
+
+    - assets/body_type/no_sign.png
+    - assets/body_type/star.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -41,7 +41,7 @@ class _CameraCaptureState extends State<CameraCapture> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 30, width: double.infinity),
+            SizedBox(height: 30),
             _buildPhotoArea(),
             SizedBox(height: 20),
             _buildButton(),
@@ -54,9 +54,9 @@ class _CameraCaptureState extends State<CameraCapture> {
                   print('이미지를 선택하세요.');
                 }
               },
-              child: Text("사진 등록"),
+              child: Text("사진 업로드"),
             ),
-            // 로딩 표시
+
             // 로딩 표시
             if (_loading)
               LoadingAnimationWidget.staggeredDotsWave(
@@ -69,7 +69,6 @@ class _CameraCaptureState extends State<CameraCapture> {
     );
   }
 
-  // 버튼 위젯
   Widget _buildPhotoArea() {
     return _image != null
         ? Container(
@@ -80,7 +79,14 @@ class _CameraCaptureState extends State<CameraCapture> {
         : Container(
       width: 300,
       height: 300,
-      color: Colors.grey[400],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/img/cloth_ex.png',
+          )
+        ],
+      ),
     );
   }
 

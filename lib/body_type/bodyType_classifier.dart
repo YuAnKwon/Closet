@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
 import '../../api_resource/ApiResource.dart';
-import 'BodyType_Classifier.dart';
+import 'body_result.dart';
+import 'body_result_screen.dart';
 
 class UploadBody extends StatefulWidget {
   @override
@@ -18,7 +17,6 @@ class _UploadBodyState extends State<UploadBody> {
   final ImagePicker picker = ImagePicker();
   bool _loading = false;
 
-  // 이미지를 가져오는 함수
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(
       source: imageSource,
@@ -42,9 +40,16 @@ class _UploadBodyState extends State<UploadBody> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 30, width: double.infinity),
+            SizedBox(height: 30),
             _buildPhotoArea(),
             SizedBox(height: 20),
+            Text(
+              '자신의 체형이 잘 드러나는 사진을 \n 업로드 해주세요',
+              style: TextStyle(
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
+            ),
             SizedBox(height: 20),
             _buildButton(),
             SizedBox(height: 30),
@@ -58,7 +63,6 @@ class _UploadBodyState extends State<UploadBody> {
               },
               child: Text("사진 업로드"),
             ),
-            // 로딩 표시
             if (_loading)
               LoadingAnimationWidget.staggeredDotsWave(
                 color: Color(0xFFC7B3A3),
@@ -73,28 +77,22 @@ class _UploadBodyState extends State<UploadBody> {
   Widget _buildPhotoArea() {
     return _image != null
         ? Container(
-            width: 300,
-            height: 300,
-            child: Image.file(File(_image!.path)), // 가져온 이미지를 화면에 띄워주는 코드
-          )
+      width: 300,
+      height: 300,
+      child: Image.file(File(_image!.path)),
+    )
         : Container(
-            width: 300,
-            height: 300,
-            color: Colors.grey[400],
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '자신의 체형이 잘 드러나는 사진을 \n 업로드 해주세요',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          );
+      width: 300,
+      height: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/img/body_ex.png',
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildButton() {
@@ -103,14 +101,14 @@ class _UploadBodyState extends State<UploadBody> {
       children: [
         ElevatedButton(
           onPressed: () {
-            getImage(ImageSource.camera); // 카메라로 찍은 사진 가져오기
+            getImage(ImageSource.camera);
           },
           child: Text("카메라"),
         ),
         SizedBox(width: 30),
         ElevatedButton(
           onPressed: () {
-            getImage(ImageSource.gallery); // 갤러리에서 사진 가져오기
+            getImage(ImageSource.gallery);
           },
           child: Text("갤러리"),
         ),
@@ -118,47 +116,57 @@ class _UploadBodyState extends State<UploadBody> {
     );
   }
 
-  //----------------------사진 POST----------------------------
   void post_clothpic(String imagePath) async {
     setState(() {
-      _loading = true; // Start loading state
+      _loading = true;
     });
-    var dio = Dio();
+    // var dio = Dio();
     try {
-      dio.options.contentType = 'multipart/form-data';
-      dio.options.maxRedirects.isFinite;
+      // dio.options.contentType = 'multipart/form-data';
+      // dio.options.maxRedirects.isFinite;
 
-      // Create FormData
-      var formData = FormData.fromMap({
-        'image': await MultipartFile.fromFile(imagePath),
-      });
+      // var formData = FormData.fromMap({
+      //   'image': await MultipartFile.fromFile(imagePath),
+      // });
 
-      // Send POST request to the server
-      var response = await dio.post(
-        ApiResource.serverUrl + '/bodyupload',
-        data: formData,
-      );
+      // var response = await dio.post(
+      //   ApiResource.serverUrl + '/bodyupload',
+      //   data: formData,
+      // );
 
-      print('응답 데이터: ${response.data}');
+      // print('응답 데이터: ${response.data}');
+
+      // String bodyType = response.data['type'];
+      String bodyType = '삼각형';
+      BodyTypeData? bodyTypeData = getBodyTypeData(bodyType);
+      if (bodyTypeData == null) {
+        showAlertDialog(context, '알 수 없는 체형입니다.');
+        return;
+      }
 
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                BodyTypeClassifier(responseData: response.data)),
+          builder: (context) => BodyTypeResult(
+            bodyType: bodyTypeData.bodyType,
+            description: bodyTypeData.description,
+            recommendedItems: bodyTypeData.recommendedItems,
+            recommendedImages: bodyTypeData.recommendedImages,
+            avoidItems: bodyTypeData.avoidItems,
+            avoidImages: bodyTypeData.avoidImages,
+          ),
+        ),
       );
     } catch (e) {
-      // Handle exceptions and show alert if failed
       print('업로드 실패: $e');
       showAlertDialog(context, '이미지 업로드에 실패했습니다.');
     } finally {
       setState(() {
-        _loading = false; // End loading state
+        _loading = false;
       });
     }
   }
 
-  // 알림 창 표시
   void showAlertDialog(BuildContext context, String message) {
     showDialog(
       context: context,

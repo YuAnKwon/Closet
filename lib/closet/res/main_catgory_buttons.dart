@@ -49,8 +49,8 @@ class _CategorySubCategoryWidgetsState
                   ),
                   child: Image.asset(
                     widget.selectedCategory == category
-                        ? 'assets/${category}white.png'
-                        : 'assets/$category.png',
+                        ? 'assets/category/${category}white.png'
+                        : 'assets/category/$category.png',
                     width: 40,
                     height: 40,
                     fit: BoxFit.cover,

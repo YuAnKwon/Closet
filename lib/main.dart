@@ -1,7 +1,8 @@
 import 'package:closet/recommend_screen.dart';
 import 'package:closet/weather/weather_screen.dart';
 import 'package:flutter/material.dart';
-import 'body_type/upload_body.dart';
+import 'body_type/bodyType_classifier.dart';
+import 'body_type/body_result_screen.dart';
 import 'closet/closet_mainscreen.dart';
 import 'look_book/lookbook_mainscreen.dart';
 import 'package:permission_handler/permission_handler.dart';
