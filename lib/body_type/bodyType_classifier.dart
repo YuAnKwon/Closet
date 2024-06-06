@@ -120,24 +120,24 @@ class _UploadBodyState extends State<UploadBody> {
     setState(() {
       _loading = true;
     });
-    // var dio = Dio();
+     var dio = Dio();
     try {
-      // dio.options.contentType = 'multipart/form-data';
-      // dio.options.maxRedirects.isFinite;
+      dio.options.contentType = 'multipart/form-data';
+      dio.options.maxRedirects.isFinite;
 
-      // var formData = FormData.fromMap({
-      //   'image': await MultipartFile.fromFile(imagePath),
-      // });
+      var formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(imagePath),
+      });
 
-      // var response = await dio.post(
-      //   ApiResource.serverUrl + '/bodyupload',
-      //   data: formData,
-      // );
+      var response = await dio.post(
+        ApiResource.serverUrl + '/bodyupload',
+        data: formData,
+      );
 
-      // print('응답 데이터: ${response.data}');
+      print('응답 데이터: ${response.data}');
 
-      // String bodyType = response.data['type'];
-      String bodyType = '삼각형';
+      String bodyType = response.data['body_shape'];
+      //String bodyType = '삼각형';
       BodyTypeData? bodyTypeData = getBodyTypeData(bodyType);
       if (bodyTypeData == null) {
         showAlertDialog(context, '알 수 없는 체형입니다.');

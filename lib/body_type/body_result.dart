@@ -41,7 +41,7 @@ BodyTypeData? getBodyTypeData(String bodyType) {
           'assets/body_type/hourglass/hourglass_7.jpg',
         ],
       );
-    case '타원형':
+    case '원형':
       return BodyTypeData(
         bodyType: '타원형',
         description: '상체와 하체가 둥글게 이어지는 체형입니다. 몸의 중심인 복부가 어깨와 골반보다 크게 발달하여 중심부가 돋보이는 경향이 있습니다.',
