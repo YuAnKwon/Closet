@@ -44,7 +44,7 @@ class _UploadBodyState extends State<UploadBody> {
             _buildPhotoArea(),
             SizedBox(height: 20),
             Text(
-              '자신의 체형이 잘 드러나는 사진을 \n 업로드 해주세요',
+              '자신의 체형이 잘 드러나는 사진을 \n업로드 해주세요',
               style: TextStyle(
                 fontSize: 20,
               ),
