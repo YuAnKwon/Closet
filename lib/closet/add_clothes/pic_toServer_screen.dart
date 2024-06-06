@@ -44,6 +44,14 @@ class _CameraCaptureState extends State<CameraCapture> {
             SizedBox(height: 30),
             _buildPhotoArea(),
             SizedBox(height: 20),
+            Text(
+              '옷장에 등록할 옷을 \n 업로드 해주세요',
+              style: TextStyle(
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 20),
             _buildButton(),
             SizedBox(height: 30),
             ElevatedButton(
