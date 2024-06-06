@@ -30,6 +30,7 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   // 날씨데이터
+  // 날씨데이터
   void _onDataLoaded(double temperature, String description, String icon,
       double minTemp, double maxTemp, int humidity, double windSpeed) {
     setState(() {
@@ -40,23 +41,26 @@ class _WeatherPageState extends State<WeatherPage> {
       _maxTemperature = maxTemp;
       _humidity = humidity;
       _windSpeed = windSpeed;
-      _isLoading = false;
 
       // 날씨 데이터를 가져온 후에 옷 데이터
-      _loadClothingImages();
+      _loadClothingImages(); // 옷 이미지를 로드하기 위해 호출하지 않고, 로컬 이미지만 업데이트
     });
   }
 
   Future<void> _loadClothingImages() async {
     try {
       List<String> clothingItems =
-          recommendCloth.ClothRecommend(_temperature ?? 0);
+      recommendCloth.ClothRecommend(_temperature ?? 0);
+      // 서버에서 이미지를 미리 불러와서 저장
       await recommendCloth.loadClothingImages(clothingItems);
-      setState(() {});
+      setState(() {
+        _isLoading = false; // 로딩 상태 종료
+      });
     } catch (error) {
       _onError(error.toString());
     }
   }
+
 
   void _onError(String message) {
     setState(() {
