@@ -44,15 +44,7 @@ class _CameraCaptureState extends State<CameraCapture> {
           children: [
             SizedBox(height: 30),
             _buildPhotoArea(),
-            SizedBox(height: 20),
-            Text(
-              '옷장에 등록할 옷을 \n 업로드 해주세요',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             _buildButton(),
             SizedBox(height: 30),
             ElevatedButton(
@@ -81,22 +73,26 @@ class _CameraCaptureState extends State<CameraCapture> {
   Widget _buildPhotoArea() {
     return _image != null
         ? Container(
-      width: 300,
-      height: 300,
-      child: Image.file(File(_image!.path)), // 가져온 이미지를 화면에 띄워주는 코드
-    )
-        : Container(
-      width: 300,
-      height: 300,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            'assets/img/cloth_ex.png',
+            width: 300,
+            height: 300,
+            child: Image.file(File(_image!.path)), // 가져온 이미지를 화면에 띄워주는 코드
           )
-        ],
-      ),
-    );
+        : Container(
+            width: 300,
+            height: 300,
+            color: Colors.grey[400],
+            child:
+            Center(
+              child: Text(
+                '옷장에 등록할 옷을 \n 업로드 해주세요',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
   }
 
   Widget _buildButton() {
@@ -147,12 +143,16 @@ class _CameraCaptureState extends State<CameraCapture> {
       // Navigate to another page after uploading the image
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ClothUpload(responseData: response.data)),
+        MaterialPageRoute(
+            builder: (context) => ClothUpload(responseData: response.data)),
       );
     } catch (e) {
       // Handle exceptions and show alert if failed
       print('업로드 실패: $e');
-      if (e is DioError && e.response != null && e.response!.statusCode == 400 && e.response!.data['error'] == 'Image already exists in the database') {
+      if (e is DioError &&
+          e.response != null &&
+          e.response!.statusCode == 400 &&
+          e.response!.data['error'] == 'Image already exists in the database') {
         showAlertDialog(context, '동일한 이미지가 이미 등록되었습니다.');
       } else {
         showAlertDialog(context, '이미지 업로드에 실패했습니다.');
@@ -163,7 +163,6 @@ class _CameraCaptureState extends State<CameraCapture> {
       });
     }
   }
-
 
   // 알림 창 표시
   void showAlertDialog(BuildContext context, String message) {
