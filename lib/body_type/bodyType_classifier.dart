@@ -31,6 +31,7 @@ class _UploadBodyState extends State<UploadBody> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: Text("나의 체형에 맞는 패션은?"),
