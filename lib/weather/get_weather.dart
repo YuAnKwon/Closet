@@ -6,19 +6,21 @@ Future<void> getWeatherData(Function(double, String, String, double, double, int
   Position position;
   try {
     position = await _determinePosition();
-    String apiKey = '';
+    String apiKey = '125aa18fbbae6d4c93f20fdd0279b39b';
     String url =
         'https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=$apiKey&units=metric&lang=kr';
 
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var weatherData = jsonDecode(response.body);
-      double minTemp = weatherData['main']['temp_min'];
-      double maxTemp = weatherData['main']['temp_max'];
+      double minTemp = (weatherData['main']['temp_min'] as num).toDouble();
+      double maxTemp = (weatherData['main']['temp_max'] as num).toDouble();
+      double temp = (weatherData['main']['temp'] as num).toDouble();
+      double windSpeed = (weatherData['wind']['speed'] as num).toDouble();
       int humidity = weatherData['main']['humidity'];
-      double windSpeed = weatherData['wind']['speed'];
+
       onDataLoaded(
-          weatherData['main']['temp'],
+          temp,
           weatherData['weather'][0]['description'],
           weatherData['weather'][0]['icon'],
           minTemp,
